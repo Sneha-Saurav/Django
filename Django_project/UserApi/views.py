@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from UserApi.models import Blog
 
 
 # Create your views here.
@@ -21,10 +22,12 @@ def division(num1,num2):
     return div
 
 def index(request):
-    form  = """
+    num1 = request.GET.get('num1', '')
+    num2 = request.GET.get('num2', '')
+    form  = f"""
     <form method="GET">
-    <input type='text' name='num1'>
-    <input type='text' name='num2'>
+    <input type='text' name='num1' value={num1}>
+    <input type='text' name='num2' value={num2}>
     <button name='add'>+</button>
     <button name='sub'>-</button>
     <button name='mul'>*</button>
@@ -33,8 +36,6 @@ def index(request):
     """
     result = ""
     if request.method == 'GET':
-        num1 = request.GET.get('num1')
-        num2 = request.GET.get('num2')
         print(request.GET)
         # if 'Submit' in request.POST:
         if 'add' in request.GET:
@@ -48,6 +49,19 @@ def index(request):
         else:
             result = ""
     return HttpResponse(f"<html>{form} <h2>Result: {result}</h2><html>")
+
+
+
+
+
+def get_blog(request, blog_id):
+    try:
+        result  = Blog.objects.get(pk=blog_id)
+    except Blog.DoesNotExist:
+        raise Http404("Blog does not exist.")
+    print(result.title)
+    return HttpResponse(f"<h1>{result.title}</h1><p>{result.description}</p>")
+
 
 
 
