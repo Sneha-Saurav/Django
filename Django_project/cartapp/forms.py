@@ -11,6 +11,7 @@ class Product_form(forms.ModelForm):
         model = Products
         fields ='__all__'
         exclude = ['created_at']
+
         
 
     

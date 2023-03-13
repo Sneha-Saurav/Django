@@ -39,11 +39,21 @@ def product_list(request):
 def add_to_cart(request, **kwargs):
         if pk:= kwargs.get('pk'):
             product = Products.objects.get(pk=pk)
+            action = request.POST.get('action')
             print(product.pk)
-            cart = Cart.objects.create(product_id=product.pk, product_qty=1)
-            cart.save()
+            if product.pk in Cart.product and 'qty' not in  request.GET:
+                error_msg =" already added to cart "
+            else:
+                cart = Cart.objects.create(product_id=product.pk)
+                if action == 'increment':
+                    cart.product_qty += 1
+                elif action == 'decrement':
+                    cart.product_qty -= 1
+                cart.product_qty += 1
+                cart.save()
         cart =Cart.objects.all()
-        return render(request, 'add_to_cart.html', {'cart': cart})
+        total_sum = sum(cp.product.price * cp.product_qty for cp in cart)
+        return render(request, 'add_to_cart.html', {'cart': cart, 'totoal_sum':total_sum})
 
 
 

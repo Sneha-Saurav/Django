@@ -10,6 +10,13 @@
     <p>Price :Rs {{p.price}}</p>
     <img class='img-responsive'src="{{ MEDIA_URL }}{{p.product.image.url}}" width="400" 
     height="500"/>
+
+    <form>
+        {% csrf_token %}
+        <button type="submit" name="action" value="increment">+</button>
+        <input type="number" name="qty" value="{{ p.product_qty}}">
+        <button type="submit" name="action" value="decrement">-</button>
+        </form>
     <hr>
     {%  endfor %}
    
