@@ -1,0 +1,20 @@
+<div>
+    <h1>BLOGS</h1>
+    {% if msg %}
+     <p  style="color:red">{{msg}}</p>
+    {% endif %}
+    <hr>
+    {% for p in products %}
+    <p>Id : {{p.id}}</p>
+    <p>Name: {{p.product_name}}</p>
+    <p>Description: {{p.description}}</p>
+    <p>Price :Rs {{p.price}}</p>
+    <img class='img-responsive'src="{{ MEDIA_URL }}{{p.image.url}}"   width="400" 
+    height="500"/>
+    <a href="/add_to_cart/{{p.id}}">Add to Cart</a>
+    <hr>
+    {%  endfor %}
+   
+
+   
+</div>

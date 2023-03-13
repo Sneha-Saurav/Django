@@ -50,7 +50,7 @@ def blog_delete(request, **kwargs):
             if pk:= kwargs.get('pk'):
                 edit_blog  = Blog.objects.get(pk=pk)
                 edit_blog.delete()
-                return redirect('/blog/list')
+                return redirect('/blog/list')  # use reverse here 
         except:
             error_msg= "Blog not found"
 

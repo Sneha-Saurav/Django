@@ -1,0 +1,18 @@
+<div>
+    <h1>BLOGS</h1>
+    {% if msg %}
+     <p  style="color:red">{{msg}}</p>
+    {% endif %}
+    <hr>
+    {% for p in cart %}
+    <p>Id : {{p.id}}</p>
+    <p>Description: {{p.product.product_name}}</p>
+    <p>Price :Rs {{p.price}}</p>
+    <img class='img-responsive'src="{{ MEDIA_URL }}{{p.product.image.url}}" width="400" 
+    height="500"/>
+    <hr>
+    {%  endfor %}
+   
+
+   
+</div>
