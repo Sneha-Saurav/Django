@@ -16,10 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
-from UserApi.views import index, get_blog
+from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', csrf_exempt(index)),
-    path('blog/<int:blog_id>', get_blog)
+    # path('', csrf_exempt(index)),
+    # path('blog/<int:blog_id>', get_blog),
+    # path('form',solve)
+    path('blog/create', blog_create),
+    path('blog/list',get_blogs ),
+    path('blog/<int:pk>/edit', blog_edit),
+    path('blog/<int:pk>/delete', blog_delete),
+    path('user/create', user_create)
 ]

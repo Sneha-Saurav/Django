@@ -1,0 +1,22 @@
+<div>
+    <h1>BLOGS</h1>
+    {% if msg %}
+     <p  style="color:red">{{msg}}</p>
+    {% endif %}
+    <hr>
+    {% for blog in blogs %}
+    <p>Id : {{blog.id}}</p>
+    <p>Title: {{blog.title}}</p>
+    <p>Author: {{blog.author}}</p>
+    <p>Description: {{blog.description}}</p>
+    <p>Published Date: {{blog.create_date.date}}</p>
+    <a href='/blog/{{blog.id}}/edit'>EDIT</a>
+    <a href="/blog/{{blog.id}}/delete">DELETE</a>
+    <hr>
+
+    {%  empty %}
+    <h3 style="color:blueviolet">Blog Table is empty</h3> <a href="/blog/create">CREATE BLOG</a>
+    {%  endfor %}
+
+</div>
+

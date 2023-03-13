@@ -10,13 +10,13 @@ class BlogAdmin(admin.ModelAdmin):
     # search_fields=['title']
 
     def is_recently_published(self, obj):
-         if obj.is_published == True:
-            var = obj.create_date
-            now_time = timezone.now()
-            blog_end_time = now_time + timezone.timedelta(days=2) #tommorow
-            blog_start_time = now_time - timezone.timedelta(days=2) #yesterday
-            if  var > blog_start_time and var < blog_end_time:
+            published_date = obj.create_date
+            current =  timezone.now()
+            end_date = current + timezone.timedelta(days=1) # date of tommorow
+            start_date = current - timezone.timedelta(days=1) # date of yesterday
+            if start_date <= published_date <= end_date:
                 return True
             else:
                 return False
+    is_recently_published.short_description ='Recent Published'
 admin.site.register(Blog, BlogAdmin)
