@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create
-from cartapp.views import register_user, product_create,product_list,add_to_cart
+from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart
 from django.conf.urls.static import static 
 
 urlpatterns = [
@@ -33,5 +33,7 @@ urlpatterns = [
     path('user/create', register_user),
     path('product/create',product_create),
     path('product/list',product_list),
-    path('add_to_cart/<int:pk>', add_to_cart)
+    path('add_to_cart/<int:pk>', add_to_cart),
+    path('remove_from_cart/<int:id>',remove_cart),
+    path('cart/details', list_cart)
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

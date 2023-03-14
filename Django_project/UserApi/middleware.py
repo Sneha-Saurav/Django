@@ -6,11 +6,11 @@ class ErrorHandleException(object):
         self.get_response  = get_response
     
     def __call__(self, request):
-        print("get response")
+        # print("get response")
         return self.get_response(request)
 
     def process_exception(self,request, exception):
-        print(settings.SERVER) # import setting.py file 
-        print("response")
+        # print(settings.SERVER) # import setting.py file 
+        # print("response")
         print(exception)
         return None
