@@ -4,12 +4,12 @@
      <p  style="color:red">{{msg}}</p>
     {% endif %}
     <hr>
-    <p>{{request.session.cart}}</p>
-    {% for p in request.session.cart %}
-    <p>Id : {{p.id}}</p>
-    <p>Description: {{p.product.product_name}}</p>
-    <p>Price :Rs {{p.product.price}}</p> 
-    <img class='img-responsive'src="{{ MEDIA_URL }}{{p.product.image.url}}" width="400" 
+    {% for p_id , p in request.session.cart.items %}
+    <p>ID : {{p_id}}</p>
+    <p>Name: {{p.name}}</p>
+    <p>Price :Rs {{p.price}}</p>
+    <p>Quantity : {{p.quantity}}</p> 
+    <img class='img-responsive'src="/media/{{ MEDIA_URL }}{{p.image}}" width="400" 
     height="500"/>
 
     <!-- <form>
@@ -18,7 +18,7 @@
         <input type="number" name="qty" value="{{ count}}">
         <button type="submit" name="action" value="decrement">-</button>
         </form> -->
-        <a href="/remove_from_cart/{{p.id}}">Remove from  Cart</a>
+        <a href="/remove_from_cart/{{p_id}}">Remove from  Cart</a>
     <hr>
     {%  endfor %}
     <h2>Total Amount : {{total_sum}}</h2>
