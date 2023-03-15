@@ -1,3 +1,5 @@
+{% extends 'header.html' %}
+{% block content %}
 {% if msg %}
 <p  style="color:green">{{msg}}</p>
 {% endif %}
@@ -8,3 +10,4 @@
     {{form.as_div}}
     <input type="submit" value="Submit User" onclick="window.alert('Successfully Crreated')">
 </form>
+{% endblock %}

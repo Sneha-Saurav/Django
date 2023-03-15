@@ -17,11 +17,11 @@ def register_user(request):
         password = request.POST.get('password')
         user = User.objects.create_user(username, password =password)
         user.save()
+        messages.success(request,'Register Successfully')
 
     return render(request, 'register_user.html',{'form':form})
 
 def login(request):
-    error= ""
     form = RegisterForm()
     username = request.POST.get('username')
     password = request.POST.get("password")
@@ -29,11 +29,11 @@ def login(request):
     print(user)
     if user is not None:
         authlogin(request,user)
-        print("loginned!!")
+        messages.success(request,'Login Successfully')
         
     else:
         print("error")
-        error = 'Invalid Credentials'
+        messages.error(request, 'Invalid Credentials')
     return render(request, 'login.html', {'form': form})
 
 
@@ -44,7 +44,6 @@ def logout_user(request):
 
 
 def product_create(request):
-    error = " "
     product  = Product_form()
     if request.user.is_authenticated and request.user.has_perm('cartapp.add_products'):
         print(request.user.has_perm('cartapp.add_products'))
@@ -55,14 +54,17 @@ def product_create(request):
             if product.is_valid():
                 product.save()
             print(request.POST)
+            messages.success(request,'Successfully Created')
     else:
-        error = "Dont have permission to create "
-    return render(request, 'product_create.html',{'form':product, 'msg':error})
+         messages.error(request,'Dont have permission to create')
+    return render(request, 'product_create.html',{'form':product})
 
 def product_list(request):
     if request.user.is_authenticated:
         if request.method  == 'GET':
             products = Products.objects.all()
+    else:
+        messages.success(request,'Product in empty!!')
     return render(request, 'list_product.html', {'products':products})
 
 
@@ -88,6 +90,10 @@ def list_cart(request):
     print(cart)
     total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id , cp in cart.items())
     return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
+
+
+def home(request):
+    return render(request, 'index.html')
 
 
 

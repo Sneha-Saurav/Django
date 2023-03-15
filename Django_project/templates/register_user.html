@@ -1,6 +1,17 @@
+{% extends 'header.html' %}
+{% load crispy_forms_tags %} 
+{% block content %}
 <form action="" method="post">
     {% csrf_token %}
 
-    {{form.as_div}}
-    <input type="submit" value="Submit User" onclick="window.alert('Successfully Crreated')">
-</form>
+    <div>
+        {{form| crispy}}
+
+
+    </div>
+    <div>
+        <input class="btn btn-success" type="submit" value="Submit">
+
+    </div>
+    </form>
+{% endblock %}
