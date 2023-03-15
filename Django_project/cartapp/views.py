@@ -4,7 +4,7 @@ from .forms import RegisterForm, Product_form
 from django.contrib import messages
 from .models import Products
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper
-# Create your views here.
+from django.contrib.auth import authenticate, login as authlogin, logout
 
 
 def register_user(request):
@@ -15,40 +15,56 @@ def register_user(request):
         print(request.user)
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = User.objects.create_user(username, password)
+        user = User.objects.create_user(username, password =password)
         user.save()
 
     return render(request, 'register_user.html',{'form':form})
 
+def login(request):
+    error= ""
+    form = RegisterForm()
+    username = request.POST.get('username')
+    password = request.POST.get("password")
+    user = authenticate(request,username=username, password=password)
+    print(user)
+    if user is not None:
+        authlogin(request,user)
+        print("loginned!!")
+        
+    else:
+        print("error")
+        error = 'Invalid Credentials'
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+    print(request.user)
+    return redirect('/product/list')
+
 
 def product_create(request):
+    error = " "
     product  = Product_form()
-    if request.method  == 'POST':
-        print(request.FILES)
-        product  = Product_form(request.POST,request.FILES)
-        if product.is_valid():
-            # blog = blogform.save()
-            product.save()
-        print(request.POST)
-    return render(request, 'product_create.html',{'form':product})
+    if request.user.is_authenticated and request.user.has_perm('cartapp.add_products'):
+        print(request.user.has_perm('cartapp.add_products'))
+        print(request.user.is_authenticated)
+        if request.method  == 'POST':
+            print(request.FILES)
+            product  = Product_form(request.POST,request.FILES)
+            if product.is_valid():
+                product.save()
+            print(request.POST)
+    else:
+        error = "Dont have permission to create "
+    return render(request, 'product_create.html',{'form':product, 'msg':error})
 
 def product_list(request):
-    if request.method  == 'GET':
-        products = Products.objects.all()
+    if request.user.is_authenticated:
+        if request.method  == 'GET':
+            products = Products.objects.all()
     return render(request, 'list_product.html', {'products':products})
 
-# def add_to_cart(request, **kwargs):
-#         if pk:= kwargs.get('pk'):
-#             product = Products.objects.get(pk=pk)
-#             cart_session = request.session.get('cart', [])
-#             cart_items  = {'Name': cart.product.product_name, 'price':cart.product.price}
-#             cart_session.append(cart_items)
-#             request.session['cart'] = cart_session 
-#             print(request.session['cart'])
-#             # cart = request.session
-#         # return redirect('/cart/details')
-#         # cart =Cart.objects.all()
-#         return render(request, 'add_to_cart.html')
 
 def add_to_cart(request, **kwargs):
     if pk:= kwargs.get('pk'):
@@ -58,19 +74,20 @@ def add_to_cart(request, **kwargs):
     return render(request,'add_to_cart.html') and redirect('/cart/details')
 
 
-def list_cart(request):
-    print("get cart")
-    cart =request.session['cart']
-    print(cart)
-    total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id , cp in cart.items())
-    return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
-
 
 def remove_cart(request,**kwargs):
     if pk:=kwargs.get('id'):
        cart_delete =remove_from_cart_helper(request, pk)
        print(cart_delete)
     return render(request, 'add_to_cart.html') and redirect('/cart/details')
+
+
+def list_cart(request):
+    print("get cart")
+    cart =request.session['cart']
+    print(cart)
+    total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id , cp in cart.items())
+    return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
 
 
 

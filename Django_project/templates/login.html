@@ -1,0 +1,10 @@
+{% if msg %}
+<p  style="color:green">{{msg}}</p>
+{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    {{form.as_div}}
+    <input type="submit" value="Submit User" onclick="window.alert('Successfully Crreated')">
+</form>

@@ -4,6 +4,7 @@
      <p  style="color:red">{{msg}}</p>
     {% endif %}
     <hr>
+    {{request.user}}
     {% for p in products %}
     <p>Id : {{p.id}}</p>
     <p>Name: {{p.product_name}}</p>
@@ -12,6 +13,7 @@
     <img class='img-responsive'src="{{ MEDIA_URL }}{{p.image.url}}"   width="400" 
     height="500"/>
     <a href="/add_to_cart/{{p.id}}">Add to Cart</a>
+    <a href="/user/logout">Logout </a>
     <hr>
     {%  endfor %}
    
