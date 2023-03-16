@@ -8,21 +8,26 @@
     {% endif %}
     <hr>
     {% for p_id , p in request.session.cart.items %}
-    <p>ID : {{p_id}}</p>
-    <p>Name: {{p.name}}</p>
-    <p>Price :Rs {{p.price}}</p>
-    <p>Quantity : {{p.quantity}}</p> 
-    <img class='img-responsive'src="/media/{{ MEDIA_URL }}{{p.image}}" width="400" 
-    height="500"/>
 
-    <!-- <form>
-        {% csrf_token %}
-        <button type="submit" name="action" value="increment">+</button>
-        <input type="number" name="qty" value="{{ count}}">
-        <button type="submit" name="action" value="decrement">-</button>
-        </form> -->
-        <a href="/remove_from_cart/{{p_id}}">Remove from  Cart</a>
-    <hr>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+          <div class="card h-100">
+            <img src="/media/{{ MEDIA_URL }}{{p.image}}" class="card-img-top" alt="..." style="
+                width: 100%;
+                height: 15vw;
+                object-fit: cover;
+            ">
+            <div class="card-body">
+              <h5 class="card-title">{{p.name}}</h5>
+              <p class="card-text">{{p.quantity}}</p>
+              <p><b>Rs {{p.price}}</b></p>
+              <a href="/remove_from_cart/{{p_id}}" class="btn btn-primary">Remove from  Cart</a>
+
+            </div>
+            
+          </div>
+        </div>
+      </div>
     {%  endfor %}
     <h2>Total Amount : {{total_sum}}</h2>
    

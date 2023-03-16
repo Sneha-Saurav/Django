@@ -5,9 +5,58 @@ from django import forms
 from .forms import BlogForm, UserForm
 from django.contrib.auth import authenticate
 from datetime import datetime
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as authlogin, logout
+from cartapp.forms import *
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 format=  "%Y-%m-%d"
+
+
+def home_blog(request):
+    return render(request,'blog_index.html')
+
+
+def register_user(request):
+    form = RegisterForm()
+    if request.method == 'POST':
+        # print(request.POST)
+        # import pdb; pdb.set_trace()
+        print(request.user)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email  =  request.POST.get('email')
+        user = User.objects.create_user(username, password =password, email=email)
+        user.save()
+        messages.success(request,'Register Successfully')
+
+    return render(request, 'register_user.html',{'form':form})
+
+def blog_login(request):
+    form = LoginForm()
+    username = request.POST.get('username')
+    password = request.POST.get("password")
+    user = authenticate(request,username=username, password=password)
+    print(user)
+    if user is not None:
+        authlogin(request,user)
+        messages.success(request,'Login Successfully')
+        
+    else:
+        print("error")
+        messages.error(request, 'Invalid Credentials')
+    return render(request, 'blog_login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+    print(request.user)
+    return redirect('/home') 
+
+
+
+@permission_required('UserApi.add_blog')
 def blog_create(request):
     blogform  = BlogForm()
     if request.method  == 'POST':
@@ -24,11 +73,29 @@ def blog_create(request):
 
 def get_blogs(request):
     if request.method  == 'GET':
-             blogs  = Blog.objects.all()
+            blogs  = Blog.objects.all()
     return render(request, 'list.html', {'blogs':blogs})
 
 
+@permission_required('UserApi.can_publish')
+def get_blog(request, **kwargs):
+    print(request.method)
+    if request.method == 'GET':
+        print("hello")
+        print(request.GET)
+        if id:= kwargs.get('id'):
+            blog = Blog.objects.get(id=id)
+    else:
+        print(request.POST)
+        if id:= kwargs.get('id'):
+            blog = Blog.objects.get(id=id)
+            blog.is_published = True
+            blog.save()
+    return render(request,'blog_details.html',{'blog':blog})
 
+
+
+@permission_required('UserApi.change_blog')
 def blog_edit(request, **kwargs):
     blogform  = BlogForm()
     if request.method  == 'POST':
@@ -42,7 +109,7 @@ def blog_edit(request, **kwargs):
             print(request.POST)
     return render(request, 'edit.html',{'form':blogform})
 
-
+@permission_required('UserApi.delete_blog')
 def blog_delete(request, **kwargs):
     error_msg = ""
     if request.method  == 'GET':

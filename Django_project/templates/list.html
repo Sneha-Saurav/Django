@@ -1,4 +1,6 @@
+{% extends 'blog_header.html' %}
 
+{% block content %}
 <div>
     <h1>BLOGS</h1>
     {% if msg %}
@@ -6,14 +8,26 @@
     {% endif %}
     <hr>
     {% for blog in blogs %}
-    <p>Id : {{blog.id}}</p>
-    <p>Title: {{blog.title}}</p>
-    <p>Author: {{blog.author}}</p>
-    <p>Description: {{blog.description}}</p>
-    <p>Published Date: {{blog.create_date.date}}</p>
-    <a href='/blog/{{blog.id}}/edit'>EDIT</a>
-    <a href="/blog/{{blog.id}}/delete">DELETE</a>
-    <hr>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-12 mb-4">
+            <div class="card">
+              <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                <img src="https://mdbootstrap.com/img/new/standard/nature/184.jpg" class="img-fluid" />
+                <a href="#!">
+                  <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                </a>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{blog.title}}</h5>
+                <p class="card-text">
+                  {{blog.description}}
+                </p>
+                <a href="{% url 'get_blog' blog.id %}"  class="btn btn-primary" >READ</a> 
+              </div>
+            </div>
+    </div>
+
 
     {%  empty %}
     <h3 style="color:blueviolet">Blog Table is empty</h3> <a href="/blog/create">CREATE BLOG</a>
@@ -21,3 +35,6 @@
 
 </div>
 
+
+
+{% endblock %}

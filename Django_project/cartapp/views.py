@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .forms import RegisterForm, Product_form
+from cartapp.forms import RegisterForm, Product_form, LoginForm
 from django.contrib import messages
 from .models import Products
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper
@@ -15,14 +15,15 @@ def register_user(request):
         print(request.user)
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = User.objects.create_user(username, password =password)
+        email  =  request.POST.get('email')
+        user = User.objects.create_user(username, password =password, email=email)
         user.save()
         messages.success(request,'Register Successfully')
 
     return render(request, 'register_user.html',{'form':form})
 
 def login(request):
-    form = RegisterForm()
+    form = LoginForm()
     username = request.POST.get('username')
     password = request.POST.get("password")
     user = authenticate(request,username=username, password=password)
@@ -64,7 +65,8 @@ def product_list(request):
         if request.method  == 'GET':
             products = Products.objects.all()
     else:
-        messages.success(request,'Product in empty!!')
+        products =[]
+        messages.error(request,'Please register or login yourself!!')
     return render(request, 'list_product.html', {'products':products})
 
 
@@ -86,9 +88,16 @@ def remove_cart(request,**kwargs):
 
 def list_cart(request):
     print("get cart")
-    cart =request.session['cart']
-    print(cart)
-    total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id , cp in cart.items())
+    
+    if 'cart' in request.session:
+        cart =request.session['cart']
+        print(cart)
+        total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id , cp in cart.items())
+    else:
+         messages.error(request,'Cart sn empty!!')
+         cart ={}
+         total_sum = 0
+
     return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
 
 

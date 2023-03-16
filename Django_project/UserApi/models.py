@@ -7,6 +7,10 @@ class Blog(models.Model):
     description = models.TextField()
     is_published= models.BooleanField(default=False)
     create_date = models.DateTimeField()
+    class Meta:
+        permissions = (
+            ('can_publish', 'Can only Publish'),
+            )
 
 
 

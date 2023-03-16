@@ -7,6 +7,7 @@ class BlogForm(forms.ModelForm):
     class Meta:
         model  = Blog
         fields ='__all__'
+        exclude = ['is_published']
 
 
 class UserForm(forms.ModelForm):

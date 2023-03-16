@@ -1,6 +1,20 @@
+{% extends 'blog_header.html' %}
+{% block content %}
+
+{% if msg %}
+<p  style="color:green">{{msg}}</p>
+{% endif %}
+
 <form action="" method="post">
     {% csrf_token %}
 
-    {{form}}
-    <button type="submit" onclick="window.alert('Updated Crreated')">Submit</button>
+    <div class="mb-3 m-3">
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary ">Submit</button>
+    </div>
+
+   
+    
 </form>
+
+{% endblock %}

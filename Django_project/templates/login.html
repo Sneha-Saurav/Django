@@ -4,10 +4,16 @@
 <p  style="color:green">{{msg}}</p>
 {% endif %}
 
+
 <form action="" method="post">
     {% csrf_token %}
 
-    {{form.as_div}}
-    <input type="submit" value="Submit User" onclick="window.alert('Successfully Crreated')">
+    <div class="mb-3 m-3">
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary ">Submit</button>
+    </div>
+
+   
+    
 </form>
 {% endblock %}

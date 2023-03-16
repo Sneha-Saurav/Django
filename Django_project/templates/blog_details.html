@@ -1,0 +1,32 @@
+{% extends 'blog_header.html' %}
+
+{% block content %}
+<div>
+    <h1>BLOGS</h1>
+{% if msg %}
+     <p  style="color:red">{{msg}}</p>
+    {% endif %}
+    <hr>
+    <p>Id : {{blog.id}}</p>
+    <p>Title: {{blog.title}}</p>
+    <p>Author: {{blog.author}}</p>
+    <p>Description: {{blog.description}}</p>
+    <p>Published Date: {{blog.create_date.date}}</p>
+    <a href="{% url 'edit_blogs' blog.id %}">EDIT</a>
+    <a href="{% url 'delete_blogs' blog.id %}">DELETE</a>
+    <form method="post">
+        {% csrf_token %}
+        <button  name='publish' type="submit" class="btn btn-primary">Publish</button> 
+
+    </form>
+    
+    <hr>
+
+    
+    
+
+</div>
+
+
+
+{% endblock %}

@@ -1,8 +1,9 @@
-{% extends 'header.html' %}
+{% extends 'blog_header.html' %}
 {% block content %}
 {% if msg %}
-<p  style="color:red">{{msg}}</p>
+<p  style="color:green">{{msg}}</p>
 {% endif %}
+
 
 <form action="" method="post">
     {% csrf_token %}

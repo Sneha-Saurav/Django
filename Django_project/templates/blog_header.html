@@ -30,24 +30,24 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
               <div class="navbar-nav">
-                  <a href="{% url 'home'%}" class="nav-item nav-link active">Home</a>
+                  <a href="{% url 'home_blog'%}" class="nav-item nav-link active">Home</a>
                   <div class="nav-item dropdown">
-                      <a href="{% url 'home'%}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                      <a href="{% url 'home_blog'%}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Blogs</a>
                       <div class="dropdown-menu">
-                          <a href="{% url 'create_product'%}" class="dropdown-item">Add Product</a>
-                          <a href="{% url 'list_product'%}" class="dropdown-item">List Product</a>
+                          <a href="{% url 'create_blogs' %}" class="dropdown-item">Add Blog</a>
+                          <a href="{% url 'get_blogs'%}" class="dropdown-item">List Blog</a>
                       </div>
                   </div>
               </div>
               <div class="navbar-nav ms-auto">
                 {% if  request.user.is_authenticated  %}
                 <p  class="nav-item nav-link" >Welcome {{request.user}}!!</p>
-                <a href="{% url 'List_cart' %}" class="nav-item nav-link">Cart</a>
+                <a href="{% url 'get_blogs' %}" class="nav-item nav-link">Published Blog</a>
                   <a href="{% url 'Logout_user'%}" class="nav-item nav-link">Logout</a>
 
                 {% else %}
-                <a href="{% url 'List_cart' %}" class="nav-item nav-link">Cart</a>
-                  <a href="{% url 'Login_user'%}" class="nav-item nav-link">Login</a>
+                <!-- <a href="{% url 'List_cart' %}" class="nav-item nav-link">Cart</a> -->
+                  <a href="{% url 'blog_Login_user' %}" class="nav-item nav-link">Login</a>
                   <a href="{% url 'register_users'%}" class="nav-item nav-link">Register</a>
                 
                   {% endif%}
