@@ -42,8 +42,8 @@
               <div class="navbar-nav ms-auto">
                 {% if  request.user.is_authenticated  %}
                 <p  class="nav-item nav-link" >Welcome {{request.user}}!!</p>
-                <a href="{% url 'get_blogs' %}" class="nav-item nav-link">Published Blog</a>
-                  <a href="{% url 'Logout_user'%}" class="nav-item nav-link">Logout</a>
+                <a href="{% url 'published' %}" class="nav-item nav-link">Published Blog</a>
+                  <a href="{% url 'blog_logout'%}" class="nav-item nav-link">Logout</a>
 
                 {% else %}
                 <!-- <a href="{% url 'List_cart' %}" class="nav-item nav-link">Cart</a> -->

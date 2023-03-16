@@ -1,6 +1,37 @@
 {% extends 'blog_header.html' %}
 
 {% block content %}
-<h1>BLOGS</h1>
 
+<style>
+    .hero-section{
+   width: 100%;
+   height: calc(100vh - 120px);
+   background-image: url('https://unliderconvision.net/wp-content/uploads/2020/06/Is-blogging-relevant-anymore.jpeg');
+   background-size: cover;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+.hero-section .sub-heading{
+   margin-top: 10px;
+   text-align: center;
+   color: black;
+   font-weight: bold;
+   text-transform: capitalize;
+   font-size: 35px;
+   font-weight: 300;
+}
+
+</style>
+<header class="hero-section mb-3">
+    <div class="content">
+        <!-- <img src="https://thumbs.dreamstime.com/b/e-commerce-concept-goldfish-cart-47156312.jpg" class="logo" alt=""> -->
+        <p class="sub-heading">best Place to Share you  collection of all time thoughts</p>
+    </div>
+</header>
+
+<div class="d-grid gap-2">
+    <a href="{%url 'get_blogs' %}" class="btn btn-primary">See All Blogs </a>
+
+  </div>
 {% endblock %}

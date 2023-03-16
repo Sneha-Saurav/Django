@@ -17,7 +17,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
-from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create, home_blog, get_blog, blog_login
+from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create, home_blog, get_blog, blog_login, publish_blog, get_published_blog, logout_user_blog
 from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user , home
 from django.conf.urls.static import static 
 
@@ -32,6 +32,10 @@ urlpatterns = [
     path('blog/<int:pk>/edit', blog_edit, name='edit_blogs'),
     path('blog/<int:pk>/delete', blog_delete, name='delete_blogs'),
     path('register/create', register_user, name='register_users'),
+    path('publish/blog/<int:id>', publish_blog, name='publish'),
+    path('published/blog/list', get_published_blog, name='published'),
+    path('user/blog/login', blog_login, name='blog_Login_user'),
+    path('user/blog/logout', logout_user_blog, name='blog_logout'),
 
 
     path('product/create',product_create, name='create_product'),
@@ -39,7 +43,6 @@ urlpatterns = [
     path('add_to_cart/<int:pk>', add_to_cart , name='add_to_cart'),
     path('remove_from_cart/<int:id>',remove_cart, name='remove_from_cart'),
     path('cart/details', list_cart, name='List_cart'),
-    path('user/blog/login', blog_login, name='blog_Login_user'),
     path('user/login', login, name='Login_user'),
     path('user/logout',logout_user,name='Logout_user' )
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

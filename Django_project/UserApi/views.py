@@ -49,14 +49,14 @@ def blog_login(request):
     return render(request, 'blog_login.html', {'form': form})
 
 
-def logout_user(request):
+def logout_user_blog(request):
     logout(request)
     print(request.user)
     return redirect('/home') 
 
 
 
-@permission_required('UserApi.add_blog')
+@permission_required('UserApi.add_blog',raise_exception=True)
 def blog_create(request):
     blogform  = BlogForm()
     if request.method  == 'POST':
@@ -77,7 +77,23 @@ def get_blogs(request):
     return render(request, 'list.html', {'blogs':blogs})
 
 
-@permission_required('UserApi.can_publish')
+@permission_required('UserApi.can_publish', raise_exception=True)
+def publish_blog(request, **kwargs):
+    if request.method == 'GET':
+        if id:= kwargs.get('id'):
+                blog = Blog.objects.get(id=id)
+                blog.is_published = True
+                blog.save()
+                messages.success(request,'Blog Published!!')
+    return redirect('/blog/list')
+
+
+def get_published_blog(request):
+    blogs = Blog.objects.filter(is_published=True)
+    return render(request, 'list.html', {'blogs':blogs})
+
+
+
 def get_blog(request, **kwargs):
     print(request.method)
     if request.method == 'GET':
@@ -85,17 +101,10 @@ def get_blog(request, **kwargs):
         print(request.GET)
         if id:= kwargs.get('id'):
             blog = Blog.objects.get(id=id)
-    else:
-        print(request.POST)
-        if id:= kwargs.get('id'):
-            blog = Blog.objects.get(id=id)
-            blog.is_published = True
-            blog.save()
     return render(request,'blog_details.html',{'blog':blog})
 
 
-
-@permission_required('UserApi.change_blog')
+@permission_required('UserApi.change_blog',raise_exception=True)
 def blog_edit(request, **kwargs):
     blogform  = BlogForm()
     if request.method  == 'POST':
@@ -109,7 +118,7 @@ def blog_edit(request, **kwargs):
             print(request.POST)
     return render(request, 'edit.html',{'form':blogform})
 
-@permission_required('UserApi.delete_blog')
+@permission_required('UserApi.delete_blog',raise_exception=True)
 def blog_delete(request, **kwargs):
     error_msg = ""
     if request.method  == 'GET':

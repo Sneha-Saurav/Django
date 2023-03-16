@@ -7,18 +7,38 @@
      <p  style="color:red">{{msg}}</p>
     {% endif %}
     <hr>
-    <p>Id : {{blog.id}}</p>
-    <p>Title: {{blog.title}}</p>
-    <p>Author: {{blog.author}}</p>
-    <p>Description: {{blog.description}}</p>
-    <p>Published Date: {{blog.create_date.date}}</p>
-    <a href="{% url 'edit_blogs' blog.id %}">EDIT</a>
-    <a href="{% url 'delete_blogs' blog.id %}">DELETE</a>
-    <form method="post">
-        {% csrf_token %}
-        <button  name='publish' type="submit" class="btn btn-primary">Publish</button> 
 
-    </form>
+    <header class="masthead" style="background-image: url('https://wallpapercave.com/wp/wp2723844.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+              <div class="post-heading">
+                <h1>{{blog.title}}</h1>
+                <h2 class="subheading">{{blog.description}}</h2>
+                <span class="meta">Posted by
+                  <a href="#">{{blog.author}}</a>
+                  on {{blog.create_date.date}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    
+      <!-- Post Content -->
+      <article>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {{ post.body|safe }}
+              <hr>
+    
+                <div class="clearfix">
+                <a class="btn btn-primary float-right" href="{% url 'edit_blogs' blog.id %}">EDIT</a>
+                <a   class="btn btn-primary float-right" href="{% url 'delete_blogs' blog.id %}">DELETE</a>
+    
+                </div>
+   
     
     <hr>
 
