@@ -16,15 +16,41 @@ from django.views import View
 
 format=  "%Y-%m-%d"
 
-class BlogView(View):
-    form = BlogForm()
+class BlogFormView(View):
+    form  = BlogForm()
     def get(self, request):
-        return HttpResponse("Get method")
-    
+        form  = BlogForm(request.POST)
+        return render(request, 'create.html',{'form':form})
+
     def post(self, request):
-        # form = self.form(request.POST)
-        # print(form)
-        return HttpResponse("Post")
+        form  = BlogForm(request.POST)
+        if form.is_valid():
+            form.save()
+            blogs = Blog.objects.all()
+        return render(request, 'list.html', {'blogs':blogs})
+    
+class BlogView(View):
+    def get(self,request):
+        blogs  = Blog.objects.all()
+        return render(request, 'list.html', {'blogs':blogs})
+    
+    # def delete(self,request, **kwargs):
+    #     print(request.method)
+    #     try:
+    #         if pk:= kwargs.get('id'):
+    #             edit_blog  = Blog.objects.get(pk=pk)
+    #             edit_blog.delete()
+    #             return redirect('/blog/list')  # use reverse here 
+    #     except:
+    #         error_msg= "Blog not found"
+    #     blogs  = Blog.objects.all()      
+    #     return render(request, 'blog_details.html',{'blogs':blogs, 'msg':error_msg})
+
+        
+
+
+       
+       
     
 
 

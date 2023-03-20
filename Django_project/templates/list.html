@@ -57,7 +57,11 @@
                 </p>
 
                 <div class="flex">
-                  <a href="{% url 'get_blog' blog.id %}"  class="btn btn-primary" >READ</a> 
+                  <a class="btn btn-primary float-right" href="{% url 'blog-id' blog.id %}">EDIT</a>
+                 
+
+                    <a   class="btn btn-primary float-right" href="{% url 'blog-id' blog.id %}"><input type="submit" value="Delete"></a>
+                </form>
                 <form method="post">
                   {% csrf_token %}
                   {%if not blog.is_published %}

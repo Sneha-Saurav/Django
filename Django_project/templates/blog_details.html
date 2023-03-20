@@ -34,9 +34,14 @@
               <hr>
     
                 <div class="clearfix">
-                <a class="btn btn-primary float-right" href="{% url 'edit_blogs' blog.id %}">EDIT</a>
-                <a   class="btn btn-primary float-right" href="{% url 'delete_blogs' blog.id %}">DELETE</a>
-    
+                <a class="btn btn-primary float-right" href="{% url 'blog-id' blog.id %}">EDIT</a>
+
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="_method" value="DELETE">
+                  <a   class="btn btn-primary float-right" href="{% url 'blog-id' blog.id %}"><input type="submit" value="DELETE"></a>
+              </form>
+                  
                 </div>
    
     
