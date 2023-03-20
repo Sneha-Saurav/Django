@@ -34,7 +34,7 @@
                   <div class="nav-item dropdown">
                       <a href="{% url 'home_blog'%}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Blogs</a>
                       <div class="dropdown-menu">
-                          <a href="{% url 'create_blogs' %}" class="dropdown-item">Add Blog</a>
+                          <a href="{% url 'class' %}" class="dropdown-item">Add Blog</a>
                           <a href="{% url 'get_blogs'%}" class="dropdown-item">List Blog</a>
                       </div>
                   </div>
@@ -42,6 +42,8 @@
               <div class="navbar-nav ms-auto">
                 {% if  request.user.is_authenticated  %}
                 <p  class="nav-item nav-link" >Welcome {{request.user}}!!</p>
+                
+                <a href="{% url 'profile' %}" class="nav-item nav-link">Profile</a>
                 <a href="{% url 'published' %}" class="nav-item nav-link">Published Blog</a>
                   <a href="{% url 'blog_logout'%}" class="nav-item nav-link">Logout</a>
 

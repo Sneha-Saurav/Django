@@ -2,16 +2,30 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from UserApi.models import Blog
 from django import forms
-from .forms import BlogForm, UserForm
+from .forms import BlogForm, UserForm, ChangePasswordForm
 from django.contrib.auth import authenticate
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as authlogin, logout
 from cartapp.forms import *
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 # Create your views here.
+from django.views import View
 
 format=  "%Y-%m-%d"
+
+class BlogView(View):
+    form = BlogForm()
+    def get(self, request):
+        return HttpResponse("Get method")
+    
+    def post(self, request):
+        # form = self.form(request.POST)
+        # print(form)
+        return HttpResponse("Post")
+    
 
 
 def home_blog(request):
@@ -47,6 +61,32 @@ def blog_login(request):
         print("error")
         messages.error(request, 'Invalid Credentials')
     return render(request, 'blog_login.html', {'form': form})
+
+
+@login_required(login_url='/user/blog/login')
+def user_profile(request):
+    return render(request,'profile.html')
+
+
+def update_user(request,**kwargs):
+    form  = ChangePasswordForm()
+    if request.method == 'POST':
+        if pk:= kwargs.get('id'):
+            password =request.POST.get('password')
+            confirm_pass = request.POST.get('confirm_password')
+            print(password)
+            if password == confirm_pass:
+                print(pk)
+                print("yes done")
+                user = User.objects.get(id=pk)
+                print(user)
+                user.set_password(password)
+            
+                user.save()
+                messages.success(request,'Set Successfully')
+        else:
+            messages.error(request,'Password did not match')
+    return render(request, 'change_pass.html', {'form':form})
 
 
 def logout_user_blog(request):

@@ -36,9 +36,11 @@
                       <div class="dropdown-menu">
                           <a href="{% url 'create_product'%}" class="dropdown-item">Add Product</a>
                           <a href="{% url 'list_product'%}" class="dropdown-item">List Product</a>
+                          
                       </div>
                   </div>
               </div>
+              <a href="{% url 'home_blog'%}"  class="nav-item nav-link ">Blog Home</a>
               <div class="navbar-nav ms-auto">
                 {% if  request.user.is_authenticated  %}
                 <p  class="nav-item nav-link" >Welcome {{request.user}}!!</p>

@@ -14,3 +14,9 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields  = '__all__'
+
+        
+class ChangePasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    
