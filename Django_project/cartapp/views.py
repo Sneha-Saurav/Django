@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from cartapp.forms import RegisterForm, Product_form, LoginForm, AddressForm, ChangePasswordForm
 from django.contrib import messages
-from .models import Products, Address, Order
+from .models import Products, Address, Order, Wishlist
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper
 from django.contrib.auth import authenticate, login as authlogin, logout
+from django.core.paginator import Paginator
 
+# https://bbbootstrap.com/snippets/ecommerce-single-product-page-design-template-64204693
 
-
-
+# https://stackoverflow.com/questions/38006125/how-to-implement-search-function-in-django
 
 def home(request):
     return render(request, 'index.html')
@@ -71,13 +72,14 @@ def product_create(request):
 
 def product_list(request):
     if request.user.is_authenticated:
-        if request.method  == 'GET':
-            products = Products.objects.all()
+        products = Products.objects.all()
+        paginator = Paginator(products, 3)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
     else:
         products =[]
         messages.error(request,'Please register or login yourself!!')
-        return redirect('register-user')
-    return render(request, 'list_product.html', {'products':products})
+    return render(request, 'list_product.html', {'products':page_obj})
 
 
 def add_to_cart(request, **kwargs):
@@ -135,14 +137,15 @@ def  add_address(request):
 
 
 
-def order_create(request,**kwargs):
+def order_create(request):
     # pk= kwargs.get('id')
     cart =request.session['cart']
     address = Address.objects.get(user_id=request.user.id) 
     product = request.session.get('cart', {})
     print(product)
-    total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id, cp in cart.items())
+    # total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id, cp in cart.items())
     for p_id , p in cart.items():
+        total_sum = int(p['price']) * p['quantity']
         print(p['id'])
         order = Order.objects.create(user_id=request.user.id, shipping_address=address,total_price=total_sum, product_id=p['id'])
     return redirect('home')
@@ -161,6 +164,17 @@ def past_order(request):
     order_pas = Order.objects.filter(user_id=request.user.id)
     print(order_pas)
     return render(request, 'order_past.html', {'orders_past': order_pas})
+
+
+def add_to_wishlist(request, **kwargs):
+    if pk:= kwargs.get('id'):
+        product = Products.objects.get(id=pk)
+        Wishlist.objects.create(user_id=request.user.id,product_id = product.pk)
+    return redirect('get-wishlist')
+
+def get_wishlist(request):
+    wishlist  = Wishlist.objects.filter(user_id = request.user.id)
+    return render(request, 'wishlist.html', {'wishlist':wishlist})
 
     
 def update_user(request,**kwargs):

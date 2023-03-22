@@ -39,17 +39,56 @@ background-color: #333;
           </figcaption>
       </div>
       <div class="bottom-wrap"> <a href="{% url  'add_to_cart' p.id %}" class="btn btn-primary float-right" data-abc="true"> Add to Cart </a>
-        <a href="#" class="btn btn-primary float-right" data-abc="true"> Add to WishList </a>
+        <a href="{% url 'add-wishlist' p.id %}" class="btn btn-primary float-right" data-abc="true"> Add to WishList </a>
          
       </div>
   </figure>
 </div>
 
 
+
     {%  endfor %}
    
   
 
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          {% if products.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ movies.previous_page_number }}">Previous</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+            </li>
+          {% endif %}
+          {% for i in products.paginator.page_range %}
+            {% if products.number == i %}
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                  {{ i }}
+                  <span class="sr-only">(current)</span>
+                </span>
+              </li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if products.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ movies.next_page_number }}">Next</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+      <!--end of Pagination-->
+    
+    
+    
 
 
 

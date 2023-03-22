@@ -4,7 +4,10 @@
 {% block content %}
 <style>
 
-
+body 
+{
+    background-color: #333;
+}
 ul.timeline {
     list-style-type: none;
     position: relative;
@@ -58,6 +61,9 @@ ul.timeline > li.active:before {
     border: 2px solid #28a745;
 }
     </style>
+
+    <br>
+    <br>
     {% for ord in  orders_past %}
 <div class="card mt-5">
     <div class="card-body p-0 table-responsive">
@@ -65,42 +71,43 @@ ul.timeline > li.active:before {
         <table class="table mb-0">
             <thead>
                 <tr>
+                    <th scope="col">Product</th>
                     <th scope="col">Description</th>
-                    <th scope="col"></th>
-                    <th scope="col">Quantity</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Ordered Date</th>
+                    
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     
                     <th>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                        <img src="{{ MEDIA_URL }}{{ord.product.image.url}}"
                             alt="product" class="" width="80">
                     </th>
                     <td>{{ord.product.description}}</td>
-                    <td>$100 X 2</td>
-                    <td><strong>$200</strong></td>
-                    <td><span class="badge badge-warning">PENDING</span></td>
+                   
+                    <td><strong>{{ord.total_price}}</strong></td>
+                    <td><span class="badge badge-warning">DELIVERED </span></td>
                 </tr>
                 <tr>
                     <th colspan="2">
                         <span>Status:</span>
+                        <strong>PAID</strong>
                         <span class="badge badge-success">PAID</span>
                     </th>
-                    <td>
-                        <span class="text-muted">Total Price</span>
-                        <strong>$100</strong>
-                    </td>
+                   
                     <td>
                         <span class="text-muted">Total Paid</span>
-                        <strong>$100</strong>
+                        <strong>{{ord.total_price}}</strong>
                     </td>
+
                     <td>
-                        <span class="text-muted">Due</span>
-                        <strong>$100</strong>
+                        <span class="text-muted">Order Date </span>
+                        <strong>{{ord.ordered_date}}</strong>
                     </td>
+                   
+                   
                 </tr>
             </tbody>
         </table>

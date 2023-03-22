@@ -46,6 +46,25 @@ navBar.forEach(function(a){
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500;600;700;800&display=swap');
 
+
+  .form-inputs{
+    position:relative;
+}
+.form-inputs .form-control{
+    height:45px; 
+}
+
+.form-inputs .form-control:focus{
+    box-shadow:none;
+    border:1px solid #000;
+}
+
+.form-inputs i{
+    position:absolute;
+    right:10px;
+    top:15px;}
+      
+
 *,
 *:after,
 *:before {
@@ -549,8 +568,7 @@ footer section Design
 }
 
 
-        
-      
+
 </style>
 
 <body data-bs-spy="scroll" data-bs-target=".navbar">
@@ -561,11 +579,20 @@ footer section Design
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 {% endfor %}
+
+
+
 <div class="pb-2">
   <header>
     <div class="top-header">
       <div class="container d-flex justify-content-between align-items-center py-3">
         <span>Free shipping for orders over </span>
+        <div class="col-md-8">
+          <div class="d-flex form-inputs">
+          <input class="form-control" type="text" placeholder="Search any product...">
+          <i class="bx bx-search"></i>
+          </div>
+             </div>
         <span>Call: 800-6688-999</span>
       </div>
     </div>
@@ -598,7 +625,7 @@ footer section Design
                     {%else%}
                     <li><a class="dropdown-item" href="{% url 'list_product' %}">List Product</a></li>
                     {% endif %}
-                    <li><a class="dropdown-item" href="#">My Wishlist</a></li>
+                    <li><a class="dropdown-item" href="{% url 'wishlist' %}">My Wishlist</a></li>
                   </ul>
                 </li>
               </ul>
@@ -637,7 +664,7 @@ footer section Design
             {%  endif %}
             <li class="nav-item">
               <div class="basket">
-                <a  class="nav-link"  href="{% url 'List_cart'%}"><i class="fas fa-shopping-basket">CART</i><span  style='background-color:blue;' class='badge badge-warning' id='lblCartCount'> 5 </span></a>
+                <a  class="nav-link"  href="{% url 'List_cart'%}"><i class="fas fa-shopping-basket">CART</i><span  style='background-color:blue;' class='badge badge-warning' id='lblCartCount'>  </span></a>
               </div>
             </li> 
            
