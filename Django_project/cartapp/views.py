@@ -7,6 +7,14 @@ from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart
 from django.contrib.auth import authenticate, login as authlogin, logout
 
 
+
+
+
+def home(request):
+    return render(request, 'index.html')
+
+
+
 def register_user(request):
     form = RegisterForm()
     if request.method == 'POST':
@@ -100,9 +108,6 @@ def list_cart(request):
 
     return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
 
-
-def home(request):
-    return render(request, 'index.html')
 
 
 

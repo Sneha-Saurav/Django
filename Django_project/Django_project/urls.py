@@ -18,22 +18,22 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create, home_blog, get_blog, blog_login, publish_blog, get_published_blog, logout_user_blog, update_user, user_profile, BlogFormView, BlogView
-from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user , home
+from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user , home, login
 from django.conf.urls.static import static 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('add/blog',BlogFormView.as_view(), name='add-blog'),
-    # path('blog/<int:id>',BlogView.as_view(), name='blog-id'),
-    path('blog/', BlogView.as_view(), name='class'),
-    # path('blog/get/<int:id>', get_blog, name='get_blog'),
+    # path('add/blog',BlogFormView.as_view(), name='add-blog'),
+    # # path('blog/<int:id>',BlogView.as_view(), name='blog-id'),
+    # path('blog/', BlogView.as_view(), name='class'),
+    path('blog/get/<int:id>', get_blog, name='get_blog'),
     # path('form',solve)
     path('', home, name='home'),
     path('home',home_blog,name='home_blog' ),
-    # path('blog/create', blog_create, name='create_blogs'),
-    # path('blog/list',get_blogs , name='get_blogs'),
+    path('blog/create', blog_create, name='create_blogs'),
+    path('blog/list',get_blogs , name='get_blogs'),
     path('blog/<int:pk>/edit', blog_edit, name='edit_blogs'),
-    # path('blog/<int:pk>/delete', blog_delete, name='delete_blogs'),
+    path('blog/<int:pk>/delete', blog_delete, name='delete_blogs'),
     path('register/create', register_user, name='register_users'),
     path('publish/blog/<int:id>', publish_blog, name='publish'),
     path('published/blog/list', get_published_blog, name='published'),
@@ -42,6 +42,8 @@ urlpatterns = [
     path('user/profile', user_profile, name='profile'),
     path('profile/change_password/<int:id>', update_user, name='update_password'),
 
+    #########################################################################################################
+
 
     path('product/create',product_create, name='create_product'),
     path('product/list',product_list , name='list_product'),
@@ -49,5 +51,8 @@ urlpatterns = [
     path('remove_from_cart/<int:id>',remove_cart, name='remove_from_cart'),
     path('cart/details', list_cart, name='List_cart'),
     path('user/login', login, name='Login_user'),
-    path('user/logout',logout_user,name='Logout_user' )
+    path('user/logout',logout_user,name='Logout_user' ),
+    path('register',register_user, name='register-user'),
+    path('login', login , name='login'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
