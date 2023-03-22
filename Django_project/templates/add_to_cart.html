@@ -1,36 +1,134 @@
 {% extends 'header.html' %}
 
 {% block content %}
-<div>
-    <h1>CART</h1>
-    {% if msg %}
-     <p  style="color:red">{{msg}}</p>
-    {% endif %}
-    <hr>
-    {% for p_id , p in request.session.cart.items %}
+<style>
+  body{
 
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="card h-100">
-            <img src="/media/{{ MEDIA_URL }}{{p.image}}" class="card-img-top" alt="..." style="
-                width: 100%;
-                height: 15vw;
-                object-fit: cover;
-            ">
-            <div class="card-body">
-              <h5 class="card-title">{{p.name}}</h5>
-              <p class="card-text">{{p.quantity}}</p>
-              <p><b>Rs {{p.price}}</b></p>
-              <a href="/remove_from_cart/{{p_id}}" class="btn btn-primary">Remove from  Cart</a>
+background-color: #333;
+  }
 
-            </div>
-            
+ a{text-decoration: none !important}
+ 
+ .card-product-list, 
+ .card-product-grid{margin-bottom: 0}
+ .card{width: 500px;
+  position: relative;
+ display: -webkit-box;
+ display: -ms-flexbox;
+ display: flex;
+ -webkit-box-orient: vertical;
+ -webkit-box-direction: normal;
+ -ms-flex-direction: column;flex-direction:
+  column;min-width: 0;word-wrap: break-word;
+  background-color: #969191;
+  background-clip: border-box;border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 23px;margin-top: 50px}.card-product-grid:hover{-webkit-box-shadow: 0 4px 15px rgba(153, 153, 153, 0.3);box-shadow: 0 4px 15px rgba(153, 153, 153, 0.3);-webkit-transition: .3s;transition: .3s}.card-product-grid .img-wrap{border-radius: 0.2rem 0.2rem 0 0;height: 220px}.card .img-wrap{overflow: hidden}.card-lg .img-wrap{height: 280px}.card-product-grid .img-wrap{border-radius: 0.2rem 0.2rem 0 0;height: 275px;padding: 16px}[class*='card-product'] .img-wrap img{height: 100%;max-width: 100%;width: auto;display: inline-block;-o-object-fit: cover;object-fit: cover}.img-wrap{text-align: center;display: block}.card-product-grid .info-wrap{overflow: hidden;padding: 18px 20px}[class*='card-product'] a.title{color: #212529;display: block}.rating-stars{display: inline-block;vertical-align: middle;list-style: none;margin: 0;padding: 0;position: relative;white-space: nowrap;clear: both}.rating-stars li.stars-active{z-index: 2;position: absolute;top: 0;left: 0;overflow: hidden}.rating-stars li{display: block;text-overflow: clip;white-space: nowrap;z-index: 1}.card-product-grid .bottom-wrap{padding: 18px;border-top: 1px solid #e4e4e4}.bottom-wrap-payment{padding: 0px;border-top: 1px solid #e4e4e4}.rated{font-size: 10px;color: #b3b4b6}.btn{display: inline-block;font-weight: 600;color: #343a40;text-align: center;vertical-align: middle;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;background-color: transparent;border: 1px solid transparent;padding: 0.45rem 0.85rem;font-size: 1rem;line-height: 1.5;border-radius: 0.2rem}.btn-primary{color: #fff;background-color: #3167eb;border-color: #3167eb}.fa{color: #FF5722}
+
+
+
+
+.totals-item label{
+     color: white;
+        width: 60%;
+      }
+      
+  .totals-value {
+    color:white;
+        width: 40%;
+      }
+  
+  
+      .checkout:hover {
+  background-color: #494;
+}
+
+
+/* Totals section */
+.totals  .totals-item{
+ 
+    float: right;
+    clear: both;
+    width: 100%;
+    margin-bottom: 10px;
+}
+    
+.totals-item  label {
+      float: left;
+      clear: both;
+      width: 79%;
+      text-align: right;
+    }
+    
+    .totals-item  .totals-value {
+      float: right;
+      width: 21%;
+      text-align: right;
+    }
+  
+  
+
+    
+.checkout {
+  text-align: center;
+  float: right;
+  border: 0;
+  margin-top: 20px;
+  padding: 6px 25px;
+  background-color: #6b6;
+  color: #fff;
+  font-size: 25px;
+  border-radius: 3px;
+}
+
+.checkout:hover {
+  background-color: #494;
+}
+
+</style>
+<div class="container mt-5">
+
+
+<div class="row">
+  {% for p_id , p in request.session.cart.items %}
+<div class="container d-flex justify-content-center">
+  <figure class="card card-product-grid card-lg"> <a href="#" class="img-wrap" data-abc="true"> <img src="/media/{{ MEDIA_URL }}{{p.image}}"> </a>
+      <figcaption class="info-wrap">
+          <div class="row">
+              <div class="col-md-9 col-xs-9"> <a href="#" class="title" data-abc="true">{{p.name}}</a> <span class="rated">{{p.category}}</span> </div>
+              <div class="col-md-3 col-xs-3">
+                  <div class="rating text-right"> Quantity : {{p.quantity}} </div>
+              </div>
           </div>
-        </div>
+      </figcaption>
+      <div class="bottom-wrap-payment">
+          <figcaption class="info-wrap">
+              <div class="row">
+                  <div class="col-md-9 col-xs-9"> <a href="#" class="title" data-abc="true">{{p.price}}</a> <span class="rated">INR</span> </div>
+                 
+              </div>
+          </figcaption>
       </div>
-    {%  endfor %}
-    <h2>Total Amount : {{total_sum}}</h2>
-   
-    {% endblock %}
-   
+      <div class="bottom-wrap"> 
+        <a href="{% url 'remove_from_cart' p.id%}" class="btn btn-primary">Remove from  Cart</a>
+         
+      </div>
+  </figure>
 </div>
+
+
+    {%  endfor %}
+
+
+    <div class="totals">
+   
+    <div class="totals-item totals-item-total">
+      <label>Grand Total</label>
+      <div class="totals-value" id="cart-total">{{total_sum}}</div>
+    </div>
+  </div>
+      
+      <a href="{% url 'checkout' %}" class="checkout">Checkout</a>
+
+</div>
+   {%  endblock %}
+    

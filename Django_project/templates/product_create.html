@@ -3,11 +3,15 @@
 {% if msg %}
 <p  style="color:red">{{msg}}</p>
 {% endif %}
-
+<style>
+    body {
+      background-color: #333;
+  }
+</style>
 <form action="" method="post">
     {% csrf_token %}
 
-    <div class="mb-3 m-3">
+    <div class="mb-3 m-3  mt-5" >
         {{form.as_p}}
         <button type="submit" class="btn btn-primary ">Submit</button>
     </div>

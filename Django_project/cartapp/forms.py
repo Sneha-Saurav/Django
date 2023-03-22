@@ -1,6 +1,6 @@
 from django import forms 
 from django.forms import ModelForm, TextInput, EmailInput, PasswordInput, ImageField
-from .models import Products
+from .models import Products, Address
 from django.contrib.auth.models import User
 
 
@@ -70,6 +70,41 @@ class Product_form(forms.ModelForm):
 
 
         }
+
+class AddressForm(forms.ModelForm):
+       class Meta:
+        model = Address
+        fields = ('address','state','mobile_no','pincode')
+        widgets = {
+            'address': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Address'
+                }),
+                'state': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'State'
+                }),
+                'mobile_no': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Mobile Number'
+                }),
+                # 'image': ImageField(attrs={
+                # 'class': "form-control",
+                # }),
+                'pincode': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Pin code'
+                }),
+               
+         }
+        
+
+class ChangePasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    
+
+
            
     
 

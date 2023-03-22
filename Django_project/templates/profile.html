@@ -1,11 +1,22 @@
 {% extends 'header.html' %}
 {% block content %}
 
+<style>
+    body{
+  
+  background-color: #333;
+  color: white;
+    }
+</style>  
 {% if msg %}
 <p  style="color:green">{{msg}}</p>
 {% endif %}
 {{request.user.username}}
 
+
+<br>
+<br>
+<br><br><br><br>
 {{request.user.email}}
 <a href="{% url 'update_password' request.user.pk  %}">Change password</a>
 

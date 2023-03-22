@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create, home_blog, get_blog, blog_login, publish_blog, get_published_blog, logout_user_blog, update_user, user_profile, BlogFormView, BlogView
-from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user , home, login
+from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user_product , home, login, add_address,  checkout, order_create, past_order
 from django.conf.urls.static import static 
 
 urlpatterns = [
@@ -51,8 +51,14 @@ urlpatterns = [
     path('remove_from_cart/<int:id>',remove_cart, name='remove_from_cart'),
     path('cart/details', list_cart, name='List_cart'),
     path('user/login', login, name='Login_user'),
-    path('user/logout',logout_user,name='Logout_user' ),
+    path('user/logout',logout_user_product,name='Logout_user' ),
     path('register',register_user, name='register-user'),
     path('login', login , name='login'),
+    path('shipping_details', add_address , name='address'),
+    path('order', order_create, name='order'),
+    path('checkout',checkout, name='checkout'),
+    path('order/details',past_order, name='order-details'),
+
+    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,110 @@
+
+{% extends 'header.html' %}
+
+{% block content %}
+<style>
+
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+ul.timeline > li {
+    margin: 20px 0;
+    padding-left: 30px;
+}
+ul.timeline > li:before {
+    content: '\2713';
+    background: #fff;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 0;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+    z-index: 400;
+    text-align: center;
+    line-height: 50px;
+    color: #d4d9df;
+    font-size: 24px;
+    border: 2px solid #d4d9df;
+}
+ul.timeline > li.active:before {
+    content: '\2713';
+    background: #28a745;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 0;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+    z-index: 400;
+    text-align: center;
+    line-height: 50px;
+    color: #fff;
+    font-size: 30px;
+    border: 2px solid #28a745;
+}
+    </style>
+    {% for ord in  orders_past %}
+<div class="card mt-5">
+    <div class="card-body p-0 table-responsive">
+        <h4 class="p-3 mb-0">Product Description</h4>
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col"></th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    
+                    <th>
+                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                            alt="product" class="" width="80">
+                    </th>
+                    <td>{{ord.product.description}}</td>
+                    <td>$100 X 2</td>
+                    <td><strong>$200</strong></td>
+                    <td><span class="badge badge-warning">PENDING</span></td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <span>Status:</span>
+                        <span class="badge badge-success">PAID</span>
+                    </th>
+                    <td>
+                        <span class="text-muted">Total Price</span>
+                        <strong>$100</strong>
+                    </td>
+                    <td>
+                        <span class="text-muted">Total Paid</span>
+                        <strong>$100</strong>
+                    </td>
+                    <td>
+                        <span class="text-muted">Due</span>
+                        <strong>$100</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

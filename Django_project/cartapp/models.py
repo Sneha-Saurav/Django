@@ -11,18 +11,24 @@ class Products(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     stock_available = models.CharField(max_length=200)
 
-class Cart(models.Model):
+class Wishlist(models.Model):
     user  = models.ForeignKey(User, on_delete=models.CASCADE)
     product  = models.ForeignKey(Products, on_delete=models.CASCADE)
-    quantity  = models.IntegerField()
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=200)
+    state  = models.CharField(max_length=200)
+    mobile_no = models.CharField(max_length=200)
+    pincode  = models.CharField(max_length=200)
 
 
 class Order(models.Model):
     user  = models.ForeignKey(User, on_delete=models.CASCADE)
     product  = models.ForeignKey(Products, on_delete=models.CASCADE)
-    shipping_address = models.CharField(max_length=200)
+    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE)
     total_price = models.CharField(max_length=200)
-    Mobile_number = models.CharField(max_length=11)
     ordered_date = models.DateTimeField(auto_now=True)
 
 

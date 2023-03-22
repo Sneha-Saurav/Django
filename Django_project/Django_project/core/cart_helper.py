@@ -9,7 +9,7 @@ def add_to_cart_helper(request, product_id):
         cart[str(product_id)] ['image'] = str(product.image)
         cart[str(product_id)]['quantity'] += 1
     else:
-        cart[str(product_id)] = {'name': product.product_name,'price':product.price,'quantity':1, 'image':str(product.image)}
+        cart[str(product_id)] = {'id':product.pk,'name': product.product_name,'price':product.price,'quantity':1, 'image':str(product.image)}
     request.session['cart'] = cart 
     return request.session['cart']
 

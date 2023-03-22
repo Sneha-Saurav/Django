@@ -1,0 +1,55 @@
+{% extends 'header.html' %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #333;
+        color: white;
+          
+    }
+
+    .content
+    { margin-top: 20%;}
+button{
+    color:#ffffff;
+    background-color: #4caf50;
+    height:40px;
+    width:25%;
+    margin-top:15px;
+    cursor: pointer;
+    border:none;
+    border-radius:2%;
+    outline:none;
+    text-align:center;
+    font-size:16px;
+    text-decoration:none;
+    -webkit-transition-duration:0.4s;
+    transition-duration:0.4s;
+}
+button:hover{
+    background-color:#333333;
+}
+
+
+
+
+</style>
+
+
+
+
+<div class="container  mt-5">
+    <div class="content">
+      
+            <h1 class="form-title">Shipping Details</h1>
+            <form method="post">
+                {% csrf_token %}
+               {{form}}
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+ </div>
+ <br><br>
+ <br><br><br><br><br><br><br><br>
+
+{%  endblock %}

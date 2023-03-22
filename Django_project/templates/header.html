@@ -407,7 +407,12 @@ blog section Design
 footer section Design
 ==========================================
 */
+
+
 .footer{
+  position: fixed;
+  left: 0;
+  bottom: 0;
   background-color:var(--secondary-color);
 } 
 .footer .footer-social a i {
@@ -542,6 +547,8 @@ footer section Design
     }
      
 }
+
+
         
       
 </style>
@@ -584,10 +591,12 @@ footer section Design
                     Products
                   </a>
                   <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                    <li><a class="dropdown-item" href="{% url 'list_product' %}">List Product</a></li>
+                   
                     {% if request.user.is_superuser %}
                     <li><a class="dropdown-item" href="{% url 'create_product' %}">Add Product</a></li>
                     <li><a class="dropdown-item" href="{% url 'list_product' %}">Product List</a></li>
+                    {%else%}
+                    <li><a class="dropdown-item" href="{% url 'list_product' %}">List Product</a></li>
                     {% endif %}
                     <li><a class="dropdown-item" href="#">My Wishlist</a></li>
                   </ul>
@@ -599,11 +608,25 @@ footer section Design
               <a class="nav-link" href="#">Blog</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link" href="3">Profile</a>
+              <a class="nav-link" href="{%  url 'profile'%}">Profile</a>
+            </li>
+            <li class="nav-item">
+    
+              <a class="nav-link" href="{%url 'address' %}">Shipping Details</a>
+            </li>
+           
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'Logout_user'%}">Logout</a>
+            </li> 
+
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'order-details'%}">Order Details</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link" href="{%url 'blog_logout'%}">Logout</a>
+              <a href="{% url 'blog_logout'%}" class="nav-item nav-link">{{request.user.username}}</a>
             </li> 
+
+            
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="{%url 'login'%}">Login</a>
@@ -612,6 +635,12 @@ footer section Design
               <a class="nav-link" href="{% url 'register-user' %}">Register</a>
             </li> 
             {%  endif %}
+            <li class="nav-item">
+              <div class="basket">
+                <a  class="nav-link"  href="{% url 'List_cart'%}"><i class="fas fa-shopping-basket">CART</i><span  style='background-color:blue;' class='badge badge-warning' id='lblCartCount'> 5 </span></a>
+              </div>
+            </li> 
+           
            
           </ul>
         </div>
