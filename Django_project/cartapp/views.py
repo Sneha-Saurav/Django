@@ -18,16 +18,19 @@ def home(request):
 
 def register_user(request):
     form = RegisterForm()
-    if request.method == 'POST':
-        # print(request.POST)
-        # import pdb; pdb.set_trace()
-        print(request.user)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email  =  request.POST.get('email')
-        user = User.objects.create_user(username, password =password, email=email)
-        user.save()
-        messages.success(request,'Register Successfully')
+    try:
+        if request.method == 'POST':
+            # print(request.POST)
+            # import pdb; pdb.set_trace()
+            print(request.user)
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            email  =  request.POST.get('email')
+            user = User.objects.create_user(username, password =password, email=email)
+            user.save()
+            messages.success(request,'Register Successfully')
+    except Exception as er:
+        messages.error(request, "Username already exists.")
 
     return render(request, 'register_user.html',{'form':form})
 
@@ -79,7 +82,7 @@ def product_list(request):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
     else:
-        products =[]
+        page_obj =[]
         messages.error(request,'Please register or login yourself!!')
     return render(request, 'list_product.html', {'products':page_obj})
 
@@ -133,7 +136,7 @@ def  add_address(request):
                 shipping_address = form.cleaned_data['shipping_address']
                 print(shipping_address)
                 if Address.objects.filter(shipping_address=shipping_address).exists():
-                    messages.error("Address Already exists !!!")
+                    messages.error(request,"Address Already exists !!!")
                 else:
                     print("save")
                     instance  = form.save(commit=False)
@@ -145,35 +148,33 @@ def  add_address(request):
 
 
 
-
-def order_create(request):
-    # pk= kwargs.get('id')
+def order_create(request, address_id):
     cart =request.session['cart']
-    print(request.GET)
-    address = request.GET['dropdown']
-    print("+++++++++++++++++++++++++")
-    print(address)
-    address = Address.objects.get(user_id=request.user.id) 
+    address = Address.objects.get(id=address_id) 
     product = request.session.get('cart', {})
-    print(product)
-    # total_sum = sum(int(cp['price']) * cp['quantity']  for cp_id, cp in cart.items())
     for p_id , p in cart.items():
         total_sum = int(p['price']) * p['quantity']
-        print(p['id'])
         order = Order.objects.create(user_id=request.user.id, shipping_address=address,total_price=total_sum, product_id=p['id'])
+    messages.success(request , "Order Placed Successfully!!")
+    del request.session['cart']
     return redirect('home')
 
 def checkout(request):
     cart =request.session['cart']
-    print(request.GET)
-    address = request.GET.get('dropdown')
-    print(address)
     address = Address.objects.filter(user_id=request.user.id)
     total_sum = sum(int(cp['price']) * cp['quantity']  for p_id, cp in cart.items())
-    # order_create(request)
-    # order = Order.objects.get(user_id=request.user.id)
-    print(total_sum)
+    if request.method  == 'POST':
+        print(request.POST)
+        if 'address' in request.POST:
+            address = request.POST['address']
+            print(address)
+            order_create(request, address)
+        else:
+            messages.error(request, "Please choose atleast one address")
     return render(request,'checkout_page.html',{'address':address, 'amount':total_sum})
+
+
+
 
 def past_order(request):
     order_pas = Order.objects.filter(user_id=request.user.id)
@@ -184,11 +185,8 @@ def past_order(request):
 def add_to_wishlist(request, **kwargs):
     if pk:= kwargs.get('id'):
         product = Products.objects.get(id=pk)
-        # wishlist  = get_object_or_404(Wishlist, pk=product.pk)
-        # if wishlist:
         Wishlist.objects.create(user_id=request.user.id,product_id = product.pk) 
-        # else:
-        #      messages.error(request,"Item already added in wishlist")
+    
     return redirect('wishlist')
 
 def get_wishlist(request):
@@ -199,6 +197,7 @@ def delete_to_wishlist(request,**kwargs):
      if pk:= kwargs.get('id'):
          wishlist = Wishlist.objects.get(id=pk)
          wishlist.delete()
+         return redirect('List_cart')
      return render(request, 'wishlist.html', {'wishlist':wishlist})
 
     

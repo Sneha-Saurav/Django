@@ -3,7 +3,6 @@
 
 <style>
   body{
-
 background-color: #333;
 color: white;
   }.center-details
@@ -45,27 +44,11 @@ option
   height: 45px;
 }
 
-
-.form-inputs .form-control{
-    height:45px; 
-}
-
-.form-inputs .form-control:focus{
-    box-shadow:none;
-    border:1px solid #000;
-}
-
-.form-inputs i{
-    position:absolute;
-    right:10px;
-    top:15px;}
-      
+   
 
 </style>
 
 <div class="container mt-5">
-    
-
 <div class="row">
     
 {% for p_id , p in request.session.cart.items %}
@@ -103,38 +86,34 @@ option
       <hr>
       <h2>Choose the Shipping Address</h2>
       <div class="container">
-        <div class="row" id="address">
-          <div class="col-xs-12">
+        <form method="post">
+          {% csrf_token %}
+                     {% for ad in address %}               
+                     <div class="btn-group" id="options" data-toggle="buttons">
+                        <label class="btn btn-default">
+                        <input  class='add' type="radio" name="address" value="{{ ad.id }}"   />
+                          <p>
+                            Shipping Address : {{ad.shipping_address}}</p>
+                            <p> State: {{ad.state}}</p>
+                           <p>  city : {{ad.city}} </p>
+                           <p> Pincode : {{ad.pincode}}</p>
+                       
+                      </div>
 
-            <select name="dropdown">
-              <option selected="selected" disabled>Choose Address</option>
-          {% for ad in address %}
-              <option value="{{ad.pk}}">
-                <pre>
-                  Shipping Address:  {{ad.shipping_address}}
-                  City: {{ad.city}}<br>
-                  State: {{ad.state}}<br>
-                </pre>  
-              </option>
-                {% endfor %}
-          </select> 
-          </div>
-        </div>
-      </div>
-   
+                      <br>
+                  {% endfor %}
+           </div>
+        <button  class="checkout" type="submit">Order Now</button>
+        </form>
+       
     </div>
   </div>
 
-      
-      <a href="{% url 'order' %}" class="checkout">Order Now </a>
 
 </div>
 
-</div>
-</div>
     
 
-</div>
 <br><br>
 
 
