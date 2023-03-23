@@ -3,22 +3,6 @@
 {% block content %}
 
 
-<script>
-  function increaseValue() {
-  var value = parseInt(document.getElementById('number').value, 10);
-  value = isNaN(value) ? 0 : value;
-  value++;
-  document.getElementById('number').value = value;
-}
-
-function decreaseValue() {
-  var value = parseInt(document.getElementById('number').value, 10);
-  value = isNaN(value) ? 0 : value;
-  value < 1 ? value = 1 : '';
-  value--;
-  document.getElementById('number').value = value;
-}
-</script>
 <style>
   body{
 
@@ -180,9 +164,11 @@ input[type=number]::-webkit-outer-spin-button {
               </div>
               <form>
                 <div class="rating text-right"> Quantity </div>
-                <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
-                <input type="number" id="number" value="0" />
-                <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
+                <a class="value-button"  href="{% url 'decrement' p.id %}">-</a>
+                <input type="number" id="number" value="{{p.quantity}}" />
+                <a   class="value-button" href="{% url 'add_to_cart' p.id %}">+</a>
+                add_to_cart
+                
               </form>
           </div>
       </figcaption>

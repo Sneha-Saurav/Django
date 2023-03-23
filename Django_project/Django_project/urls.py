@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from UserApi.views import blog_create,get_blogs, blog_edit, blog_delete, user_create, home_blog, get_blog, blog_login, publish_blog, get_published_blog, logout_user_blog, update_user, user_profile, BlogFormView, BlogView
-from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user_product , home, login, add_address,  checkout, order_create, past_order, add_to_wishlist, get_wishlist
+from cartapp.views import register_user, product_create,product_list,add_to_cart, remove_cart, list_cart , login , logout_user_product , home, login, add_address,  checkout, order_create, past_order, add_to_wishlist, get_wishlist, delete_item, delete_to_wishlist
 from django.conf.urls.static import static 
 
 urlpatterns = [
@@ -60,6 +60,9 @@ urlpatterns = [
     path('order/details',past_order, name='order-details'),
     path('wishlist/<int:id>',add_to_wishlist, name='add-wishlist'),
     path('wishlist/list',get_wishlist, name='wishlist'),
+    path('/delete/wishlist/<int:id>',delete_to_wishlist, name='delete-wishlist'),
+    path('delete/item/<int:id>',delete_item, name='decrement'),
+
     
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

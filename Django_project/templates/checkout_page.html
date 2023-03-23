@@ -39,6 +39,28 @@ color: white;
 {
     text-align: center;
 }
+
+option
+{
+  height: 45px;
+}
+
+
+.form-inputs .form-control{
+    height:45px; 
+}
+
+.form-inputs .form-control:focus{
+    box-shadow:none;
+    border:1px solid #000;
+}
+
+.form-inputs i{
+    position:absolute;
+    right:10px;
+    top:15px;}
+      
+
 </style>
 
 <div class="container mt-5">
@@ -79,9 +101,30 @@ color: white;
         <hr>
       <label>Grand Total : {{amount}}</label>
       <hr>
-      <h4> Shipping Address:  {{address.address}}</h4>
+      <h2>Choose the Shipping Address</h2>
+      <div class="container">
+        <div class="row" id="address">
+          <div class="col-xs-12">
+
+            <select name="dropdown">
+              <option selected="selected" disabled>Choose Address</option>
+          {% for ad in address %}
+              <option value="{{ad.pk}}">
+                <pre>
+                  Shipping Address:  {{ad.shipping_address}}
+                  City: {{ad.city}}<br>
+                  State: {{ad.state}}<br>
+                </pre>  
+              </option>
+                {% endfor %}
+          </select> 
+          </div>
+        </div>
+      </div>
+   
     </div>
   </div>
+
       
       <a href="{% url 'order' %}" class="checkout">Order Now </a>
 

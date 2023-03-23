@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from cartapp.forms import RegisterForm, Product_form, LoginForm, AddressForm, ChangePasswordForm
 from django.contrib import messages
 from .models import Products, Address, Order, Wishlist
-from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper
+from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper, decrement_cart
 from django.contrib.auth import authenticate, login as authlogin, logout
 from django.core.paginator import Paginator
-
+from django.shortcuts import get_object_or_404
 # https://bbbootstrap.com/snippets/ecommerce-single-product-page-design-template-64204693
 
 # https://stackoverflow.com/questions/38006125/how-to-implement-search-function-in-django
@@ -60,9 +60,11 @@ def product_create(request):
         print(request.user.has_perm('cartapp.add_products'))
         print(request.user.is_authenticated)
         if request.method  == 'POST':
+            print("ssss")
             print(request.FILES)
             product  = Product_form(request.POST,request.FILES)
             if product.is_valid():
+                print('save')
                 product.save()
             print(request.POST)
             messages.success(request,'Successfully Created')
@@ -87,9 +89,14 @@ def add_to_cart(request, **kwargs):
         cart =add_to_cart_helper(request, pk)
         print(cart)
         messages.success(request,'Product added to Cart!!')
-        redirect('cart/detail')
     return render(request,'add_to_cart.html') and redirect('/cart/details')
 
+def delete_item(request, **kwargs):
+    if pk:= kwargs.get('id'):
+        cart  = decrement_cart(request, pk)
+        print(cart)
+        redirect('cart/details')
+        return render(request,'add_to_cart.html')
 
 
 def remove_cart(request,**kwargs):
@@ -120,18 +127,20 @@ def user_profile(request):
 
 def  add_address(request):
     form  = AddressForm()
-    # if request.method  == 'GET':
-    #     address = Address.objects.get(user_id=request.user.id)
-
     if request.method == 'POST':
-        form = AddressForm(request.POST)
-        if form.is_valid():
-            print("save")
-            instance  = form.save(commit=False)
-            instance.user_id = request.user.id
-            instance.save()
-            print("save")
-            return redirect('home')
+            form = AddressForm(request.POST)
+            if form.is_valid():
+                shipping_address = form.cleaned_data['shipping_address']
+                print(shipping_address)
+                if Address.objects.filter(shipping_address=shipping_address).exists():
+                    messages.error("Address Already exists !!!")
+                else:
+                    print("save")
+                    instance  = form.save(commit=False)
+                    instance.user_id = request.user.id
+                    instance.save()
+                    messages.success(request,'Shipping Address added !!')
+                    return redirect('home')
     return render(request, 'address.html', {'form':form})
 
 
@@ -140,6 +149,10 @@ def  add_address(request):
 def order_create(request):
     # pk= kwargs.get('id')
     cart =request.session['cart']
+    print(request.GET)
+    address = request.GET['dropdown']
+    print("+++++++++++++++++++++++++")
+    print(address)
     address = Address.objects.get(user_id=request.user.id) 
     product = request.session.get('cart', {})
     print(product)
@@ -152,8 +165,10 @@ def order_create(request):
 
 def checkout(request):
     cart =request.session['cart']
-    address = Address.objects.get(user_id=request.user.id)
+    print(request.GET)
+    address = request.GET.get('dropdown')
     print(address)
+    address = Address.objects.filter(user_id=request.user.id)
     total_sum = sum(int(cp['price']) * cp['quantity']  for p_id, cp in cart.items())
     # order_create(request)
     # order = Order.objects.get(user_id=request.user.id)
@@ -169,12 +184,22 @@ def past_order(request):
 def add_to_wishlist(request, **kwargs):
     if pk:= kwargs.get('id'):
         product = Products.objects.get(id=pk)
-        Wishlist.objects.create(user_id=request.user.id,product_id = product.pk)
-    return redirect('get-wishlist')
+        # wishlist  = get_object_or_404(Wishlist, pk=product.pk)
+        # if wishlist:
+        Wishlist.objects.create(user_id=request.user.id,product_id = product.pk) 
+        # else:
+        #      messages.error(request,"Item already added in wishlist")
+    return redirect('wishlist')
 
 def get_wishlist(request):
     wishlist  = Wishlist.objects.filter(user_id = request.user.id)
     return render(request, 'wishlist.html', {'wishlist':wishlist})
+
+def delete_to_wishlist(request,**kwargs):
+     if pk:= kwargs.get('id'):
+         wishlist = Wishlist.objects.get(id=pk)
+         wishlist.delete()
+     return render(request, 'wishlist.html', {'wishlist':wishlist})
 
     
 def update_user(request,**kwargs):

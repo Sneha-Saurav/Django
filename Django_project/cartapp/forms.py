@@ -74,7 +74,7 @@ class Product_form(forms.ModelForm):
 class AddressForm(forms.ModelForm):
        class Meta:
         model = Address
-        fields = ('address','state','mobile_no','pincode')
+        fields = ('address','state','mobile_no','pincode', 'shipping_address','city')
         widgets = {
             'address': TextInput(attrs={
                 'class': "form-control",
@@ -88,13 +88,18 @@ class AddressForm(forms.ModelForm):
                 'class': "form-control",
                 'placeholder': 'Mobile Number'
                 }),
-                # 'image': ImageField(attrs={
-                # 'class': "form-control",
-                # }),
+               'shipping_address': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Shiping Address '
+                }),
                 'pincode': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Pin code'
                 }),
+                'city': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'City'
+                })
                
          }
         
@@ -103,6 +108,9 @@ class ChangePasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
     
+
+
+
 
 
            
