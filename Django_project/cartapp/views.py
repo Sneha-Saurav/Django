@@ -26,7 +26,9 @@ def register_user(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
             email  =  request.POST.get('email')
-            user = User.objects.create_user(username, password =password, email=email)
+            first_name = request.POST.get('first_name')
+            last_name =request.POST.get('last_name')
+            user = User.objects.create_user(username, password =password, email=email, first_name=first_name, last_name=last_name)
             user.save()
             messages.success(request,'Register Successfully')
     except Exception as er:
@@ -185,7 +187,10 @@ def past_order(request):
 def add_to_wishlist(request, **kwargs):
     if pk:= kwargs.get('id'):
         product = Products.objects.get(id=pk)
-        Wishlist.objects.create(user_id=request.user.id,product_id = product.pk) 
+        if Wishlist.objects.filter(product_id=product.pk).exists():
+            messages.error(request,' Item already added to wishlist !!')
+        else:
+            Wishlist.objects.create(user_id=request.user.id,product_id = product.pk) 
     
     return redirect('wishlist')
 
