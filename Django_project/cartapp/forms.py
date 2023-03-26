@@ -1,13 +1,20 @@
 from django import forms 
-from django.forms import ModelForm, TextInput, EmailInput, PasswordInput, ImageField
-from .models import Products, Address
-from django.contrib.auth.models import User
+from django.forms import ModelForm, TextInput, EmailInput, PasswordInput, ImageField, Textarea, DateInput
+from .models import Products, Address, ProfileUser
+
 
 
 class RegisterForm(forms.ModelForm):
+     def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super(RegisterForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
      class Meta:
-        model = User
-        fields =('first_name', 'last_name','username', 'password', 'email')
+        model = ProfileUser
+        fields =('first_name', 'last_name','username', 'password', 'email','mobile_no','dob', 'country')
         widgets = {
             'username': TextInput(attrs={
                 'class': "form-control",
@@ -29,14 +36,26 @@ class RegisterForm(forms.ModelForm):
                 'class': "form-control",
                 'placeholder': 'Username'
                 }),
+                 'mobile_no': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Username'
+                }),
+                 'dob': DateInput(attrs={'type': 'date',
+                                         'class': "form-control",
+                                        'placeholder': 'Username'}),
+
+                 'country': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Username'
+                }),
         }
     
 class LoginForm(forms.ModelForm):
      class Meta:
-        model = User
-        fields =('username', 'password')
+        model = ProfileUser
+        fields =('email', 'password')
         widgets = {
-            'username': TextInput(attrs={
+            'email': EmailInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Username'
                 }),
@@ -56,7 +75,7 @@ class Product_form(forms.ModelForm):
                 'class': "form-control",
                 'placeholder': 'Name'
                 }),
-                'description': TextInput(attrs={
+                'description': Textarea(attrs={
                 'class': "form-control",
                 'placeholder': 'Description'
                 }),
@@ -117,11 +136,74 @@ class ChangePasswordForm(forms.Form):
     confirm_password = forms.CharField(widget=forms.PasswordInput)
     
 
-# class ProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = ProfileUser
-#         fields = ()
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = ProfileUser
+        fields = '__all__'
+        exclude  = ('is_superuser','is_staff','is_active', 'date_joined','last_login', 'password', 'profile_pic')
+        widgets = {
+            'first_name': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'firsr name'
+                }),
+                'last_name': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'last name '
+                }),
+                'username': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Username'
+                }),
+                'email': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Email'
+                }),
+                'dob': DateInput(attrs={
+                    'type':'date',
+                'class': "form-control",
+                'placeholder': 'Date of Birth '
+                }),
+                'country': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'country'
+                }),
+                'mobile_no': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'mobile no'
+                }),
+                'p_address': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'p_address'
+                }),
 
+        }
+
+
+
+
+class EditProfilePicForm(forms.ModelForm):
+    class Meta:
+        model = ProfileUser
+        fields = ['profile_pic']
+    
+class ChangePassword(forms.ModelForm):
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super(ChangePassword, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+    class Meta:
+        model = ProfileUser
+        fields = ['password']
+        widgets = {
+            'password': PasswordInput(attrs={
+                'class': "form-control",
+                'placeholder': 'password'
+                }),
+
+        }
 
 
 

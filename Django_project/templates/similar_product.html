@@ -26,7 +26,8 @@ background-color: #333;
 <div class="container mt-5">
 
 <div class="row">
-{% for p in products %}
+    <h1>SIMILAR PRODUCTS</h1>
+{% for p in product %}
 <div class="container d-flex justify-content-center">
   <figure class="card card-product-grid card-lg"> <a href="#" class="img-wrap" data-abc="true"> <img src="{{ MEDIA_URL }}{{p.image.url}}"> </a>
       <figcaption class="info-wrap">

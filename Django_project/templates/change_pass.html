@@ -1,16 +1,20 @@
-{% extends 'blog_header.html' %}
+{% extends 'header.html' %}
 {% block content %}
 
-{% if msg %}
-<p  style="color:green">{{msg}}</p>
-{% endif %}
-
+<style>
+    body {
+        background-color: #333;
+    }
+</style>
 <form action="" method="post">
     {% csrf_token %}
 
-    <div class="mb-3 m-3">
+    <div class="mb-3 m-3 mt-5">
         {{form.as_p}}
-        <button type="submit" class="btn btn-primary ">Submit</button>
+
+    <div class="col-md-12 mt-2"><label class="labels">Confirm password</label><input  name='confirm_password' class="form-control" type="password"  placeholder="Conform password "></div>
+     
+    <button type="submit" class="btn btn-primary mt-5 ">Submit</button>
     </div>
 
    

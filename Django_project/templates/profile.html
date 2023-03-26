@@ -95,6 +95,8 @@
     color: #bcb3aa;
 }
 
+
+
 .r-activity {
     margin: 6px 0 0;
     font-size: 12px;
@@ -402,12 +404,6 @@ ul.summary-list > li:last-child  {
 }
 
 </style>  
-{% if msg %}
-<p  style="color:green">{{msg}}</p>
-{% endif %}
-
-
-
 <br>
 <br>
 <br><br><br><br>
@@ -420,13 +416,14 @@ ul.summary-list > li:last-child  {
         <div class="panel">
             <div class="user-heading round">
                 <a href="#">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                    <img src="{{ MEDIA_URL }}{{user.profile_pic.url}}" alt="">
                 </a>
-                <h1>Camila Smith</h1>
-                <p>deydey@theEmail.com</p>
+
+                <a href="{% url 'pic' %}" class="feedback" >Edit Profile Pic</a>
+                <h1>{{user.first_name}}  {{user.last_name}}</h1>
+                <p>+{{user.email}}</p>
             </div>
-  
-            
+
         </div>
     </div>
     <div class="profile-info col-md-9">
@@ -437,28 +434,28 @@ ul.summary-list > li:last-child  {
                 <h1>Bio Graph</h1>
                 <div class="row">
                     <div class="bio-row">
-                        <p><span>First Name </span>: Camila</p>
+                        <p><span>First Name </span>: {{user.first_name}}</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Last Name </span>: Smith</p>
+                        <p><span>Last Name </span>: {{user.last_name}}</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Country </span>: Australia</p>
+                        <p><span>Country </span>: {{user.country}}</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Birthday</span>: 13 July 1983</p>
+                        <p><span>Birthday</span>: {{user.dob.date}}</p>
                     </div>
                     <div class="bio-row">
                         <p><span>Occupation </span>: UI Designer</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Email </span>: jsmith@flatlab.com</p>
+                        <p><span>Email </span>: {{user.email}}</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Mobile </span>: (12) 03 4567890</p>
+                        <p><span>Mobile </span>: {{user.mobile_no}}</p>
                     </div>
                     <div class="bio-row">
-                        <p><span>Phone </span>: 88 (02) 123456</p>
+                        <p><span>Phone </span>: {{user.mobile_no}}</p>
                     </div>
                 </div>
             </div>
@@ -493,45 +490,19 @@ ul.summary-list > li:last-child  {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div class="bio-chart">
-                                <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><input class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="75" data-fgcolor="#96be4b" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(150, 190, 75); padding: 0px; -webkit-appearance: none; background: none;"></div>
-                            </div>
-                            <div class="bio-desk">
-                                <h4 class="green">VectorLab Portfolio</h4>
-                                <p>Started : 15 July</p>
-                                <p>Deadline : 15 August</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div class="bio-chart">
-                                <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><input class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="50" data-fgcolor="#cba4db" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(203, 164, 219); padding: 0px; -webkit-appearance: none; background: none;"></div>
-                            </div>
-                            <div class="bio-desk">
-                                <h4 class="purple">Adobe Muse Template</h4>
-                                <p>Started : 15 July</p>
-                                <p>Deadline : 15 August</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
   </div>
-  <div id="mybutton">
-    
-    <a class="feedback">Edit Profile</a>
-    <a href="{% url 'update_password' request.user.pk  %}" class="feedback">Change Password</a>
-    </div>
+  <br>
+  <br>
+  <br>
 
+  <div id="mybutton">
+        <a href="{% url 'edit_profile' %}" class="feedback" >Edit Profile</a>
+        <a href="{% url 'update_password' %}" class="feedback">Change Password</a>
   </div>
+</div>
 
  
 {% endblock %}

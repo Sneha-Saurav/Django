@@ -1,8 +1,9 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from cartapp.forms import RegisterForm, Product_form, LoginForm, AddressForm, ChangePasswordForm
+# from django.contrib.auth.models import User
+from cartapp.forms import RegisterForm, Product_form, LoginForm, AddressForm, ChangePasswordForm, EditProfileForm,EditProfilePicForm, ChangePassword
 from django.contrib import messages
-from .models import Products, Address, Order, Wishlist
+from .models import Products, Address, Order, Wishlist, ProfileUser
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper, decrement_cart
 from django.contrib.auth import authenticate, login as authlogin, logout
 from django.core.paginator import Paginator
@@ -12,7 +13,26 @@ from django.shortcuts import get_object_or_404
 # https://stackoverflow.com/questions/38006125/how-to-implement-search-function-in-django
 
 def home(request):
+    print(request.GET)
+    search(request)
+    print(request.GET)
+
     return render(request, 'index.html')
+
+
+def search(request):
+        print("yess")
+        query = request.GET.get('search1')
+        print(query)
+        if query:
+            products=Products.objects.filter(
+                Q(category__icontains=query))
+            print('yes2')
+            return redirect('search_item')
+        else:
+             print("no")
+             products = Products.objects.all()
+        return render(request , 'similar_product.html',{'product':products})
 
 
 
@@ -20,36 +40,34 @@ def register_user(request):
     form = RegisterForm()
     try:
         if request.method == 'POST':
-            # print(request.POST)
-            # import pdb; pdb.set_trace()
+           
             print(request.user)
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            email  =  request.POST.get('email')
-            first_name = request.POST.get('first_name')
-            last_name =request.POST.get('last_name')
-            user = User.objects.create_user(username, password =password, email=email, first_name=first_name, last_name=last_name)
-            user.save()
-            messages.success(request,'Register Successfully')
+            form  = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request,'Register Successfully')
     except Exception as er:
+        print(er)
         messages.error(request, "Username already exists.")
 
     return render(request, 'register_user.html',{'form':form})
 
 def login(request):
     form = LoginForm()
-    username = request.POST.get('username')
-    password = request.POST.get("password")
-    user = authenticate(request,username=username, password=password)
-    print(user)
-    if user is not None:
-        authlogin(request,user)
-        messages.success(request,'Login Successfully')
-        return redirect('home')
-        
-    else:
-        print("error")
-        messages.error(request, 'Invalid Credentials')
+    if request.method == 'POST':
+        email = request.POST['email']
+        password  = request.POST['password']
+        print(email)
+        print(password)
+        user = authenticate(email = email, password=password)
+        print(user)
+        if user is not None:
+            authlogin(request,user)
+            messages.success(request,'Login Successfully')
+            return redirect('home')
+        else:
+            print("error")
+            messages.error(request, 'Invalid Credentials')
     return render(request, 'login.html', {'form': form})
 
 
@@ -71,6 +89,8 @@ def product_create(request):
             if product.is_valid():
                 print('save')
                 product.save()
+                return redirect('list_product')
+
             print(request.POST)
             messages.success(request,'Successfully Created')
     else:
@@ -88,6 +108,29 @@ def product_list(request):
         messages.error(request,'Please register or login yourself!!')
     return render(request, 'list_product.html', {'products':page_obj})
 
+
+
+def product_details(request, **kwargs):
+    if pk := kwargs.get('id'):
+        product = Products.objects.get(id=pk)
+        print(product.category)
+        get_product= similar_product_helper(request,product.category)
+        print(get_product)
+    return render(request, 'product_details.html', {'product':product, 'similar_product':get_product})
+
+
+def product_delete(request, **kwargs):
+    if pk := kwargs.get('id'):
+          product = Products.objects.get(id=pk)
+          product.delete()
+          return redirect('list_product')
+    return render(request, 'list_product')
+    
+    
+
+def similar_product_helper(request, category):
+    similar_product = Products.objects.filter(category=category)
+    return similar_product
 
 def add_to_cart(request, **kwargs):
     if pk:= kwargs.get('pk'):
@@ -128,7 +171,62 @@ def list_cart(request):
     return render(request, 'add_to_cart.html', {'cart': cart , 'total_sum':total_sum}) 
 
 def user_profile(request):
-    return render(request,'profile.html')
+    user = ProfileUser.objects.get(id=request.user.id)
+    print(user.profile_pic)
+    return render(request,'profile.html',{'user':user})
+
+def edit_profile(request):
+    try:
+        form  = EditProfileForm()
+        user = ProfileUser.objects.get(id=request.user.id)
+        if request.method == 'POST':
+            form = EditProfileForm(request.POST, instance=user, initial={'mobile_no': user.mobile_no})
+            if form.is_valid():
+                form.save()
+                messages.success(request,'Successfully Edited!!')
+                return redirect('profile')
+        else:
+            form = EditProfileForm(instance=user)
+    except Exception as er:
+        messages.error(request, er)
+    return render(request, 'edit_profile.html', {'form':form})
+
+def edit_profile_pic(request):
+    try:
+        form  = EditProfilePicForm()
+        print("111")
+        if request.method == 'POST':
+                print("yess")
+                user = ProfileUser.objects.get(id=request.user.id)
+                form = EditProfilePicForm(request.POST,request.FILES,instance=user)
+                if form.is_valid():
+                    print("done")
+                    form.save()
+                    messages.success(request,'Successfully Edited!!')
+                    return redirect('profile')
+    except Exception as er:
+        messages.error(request, er)
+    return render(request, 'profile_pic.html', {'form':form})
+
+
+def change_passsword(request):
+    form  = ChangePassword()
+    if request.method == 'POST':
+            user = ProfileUser.objects.get(id=request.user.id)
+            form  = ChangePassword(request.POST, instance=user)
+            password =request.POST.get('password')
+            confirm_pass = request.POST.get('confirm_password')
+            print(password)
+            print(confirm_pass)
+            if password == confirm_pass:
+                print("yes done")
+                if form.is_valid():
+                    form.save()
+                    messages.success(request,'Set Successfully')
+            else:
+                messages.error(request,'Password did not match')
+    return render(request, 'change_pass.html', {'form':form})
+
 
 def  add_address(request):
     form  = AddressForm()
@@ -225,6 +323,9 @@ def update_user(request,**kwargs):
         else:
             messages.error(request,'Password did not match')
     return render(request, 'change_pass.html', {'form':form})
+
+
+
     
 
 
