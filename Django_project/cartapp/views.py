@@ -340,7 +340,7 @@ def update_user(request,**kwargs):
             if password == confirm_pass:
                 print(pk)
                 print("yes done")
-                user = User.objects.get(id=pk)
+                user = ProfileUser.objects.get(id=pk)
                 print(user)
                 user.set_password(password)
             
