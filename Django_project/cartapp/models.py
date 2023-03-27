@@ -44,6 +44,7 @@ class Wishlist(models.Model):
 
 
 
+
 class Order(models.Model):
     user  = models.ForeignKey(ProfileUser, on_delete=models.CASCADE)
     # product  = models.ForeignKey(Products, on_delete=models.CASCADE)

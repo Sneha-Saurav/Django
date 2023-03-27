@@ -284,6 +284,7 @@ def checkout(request):
             print(address)
             order_create(request, address)
             return redirect('home')
+        
 
         else:
             messages.error(request, "Please choose atleast one address")
