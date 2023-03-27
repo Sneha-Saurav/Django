@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 
 def home(request):
     print(request.GET)
-    search(request)
+    # search(request)
     print(request.GET)
 
     return render(request, 'index.html')
