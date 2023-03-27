@@ -29,11 +29,12 @@ class Address(models.Model):
 
 
 class Products(models.Model):
-    product_name = models.CharField(max_length=50)
+    product_name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000)
     category = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/')
     price = models.CharField(max_length=50)
+    tag = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now=True)
     stock_available = models.CharField(max_length=200)
 
@@ -45,10 +46,15 @@ class Wishlist(models.Model):
 
 class Order(models.Model):
     user  = models.ForeignKey(ProfileUser, on_delete=models.CASCADE)
-    product  = models.ForeignKey(Products, on_delete=models.CASCADE)
+    # product  = models.ForeignKey(Products, on_delete=models.CASCADE)
     shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE)
     total_price = models.CharField(max_length=200)
     ordered_date = models.DateTimeField(auto_now=True)
+
+class Order_item(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    item_price = models.CharField(max_length=200)
 
 
 

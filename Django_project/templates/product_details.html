@@ -54,6 +54,8 @@
                              <span class="heart"><i class='bx bx-heart'>
                              </i></span>	
                             </div>	
+                            <mark>Tag: {{product.tag}}</mark>
+                            
                         <div class="mt-2 pr-3 content">
                             <pre class="description">
                                 {{product.description}}
@@ -85,7 +87,7 @@
                                     <div class="buttons d-flex flex-row mt-5 gap-3">
                                         <a href="{% url  'add_to_cart' product.id %}" class="btn btn-outline-dark" data-abc="true"> Add to Cart </a>
                                         <a href="{% url 'add-wishlist' product.id %}" class="btn btn-dark" data-abc="true"> Add to WishList </a>
-                                        <a href="{% url 'checkout' %}"   class="btn btn-outline-dark">Buy Now</a>
+                                       
                         	</div>
                         <div class="search-option">	
                     <i class='bx bx-search-alt-2 first-search'></i>	

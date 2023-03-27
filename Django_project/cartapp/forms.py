@@ -93,7 +93,12 @@ class Product_form(forms.ModelForm):
                 'stock_available': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'stock'
+                }),
+                'tag': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Tag'
                 })
+
 
 
         }
