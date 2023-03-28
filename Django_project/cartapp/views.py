@@ -7,11 +7,40 @@ from .models import Products, Address, Order, Wishlist, ProfileUser, Order_item
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper, decrement_cart
 from django.contrib.auth import authenticate, login as authlogin, logout
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
-# https://bbbootstrap.com/snippets/ecommerce-single-product-page-design-template-64204693
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 
-# https://stackoverflow.com/questions/38006125/how-to-implement-search-function-in-django
+class ProductSerializer(ModelSerializer):
+    class Meta:
+        model = Products
+        fields = '__all__'
 
+
+@api_view()
+def blog_list(request):
+    p = Products.objects.all()
+    return Response({'Product':ProductSerializer(p,many=True).data})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#------------------------------- MVT---------------------------------------------------------------------------------------------------
 def home(request):
     print(request.GET)
     # search(request)
