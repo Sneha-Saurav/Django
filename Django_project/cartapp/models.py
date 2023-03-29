@@ -26,15 +26,19 @@ class Address(models.Model):
     pincode  = models.CharField(max_length=200)
 
 
+class Tags(models.Model):
+    name = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return self.name
 
 class Products(models.Model):
     product_name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000)
     category = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='images/')
-    price = models.CharField(max_length=50)
-    tag = models.CharField(max_length=200, null=True)
+    image = models.ImageField(upload_to='images/', null=True)
+    price = models.FloatField(max_length=50)
+    tag = models.ManyToManyField(Tags, blank=True)
     created_at = models.DateTimeField(auto_now=True)
     stock_available = models.CharField(max_length=200)
 

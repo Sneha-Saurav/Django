@@ -10,6 +10,8 @@ from django.core.paginator import Paginator
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
+from rest_framework import status
+
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -17,10 +19,184 @@ class ProductSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class AddressSerializer(ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
+
+
+
+@api_view(http_method_names=('post',))
+def create_product_view(request):
+    serializer  = ProductSerializer(data=request.data)
+    print(serializer)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'Product':serializer.data}, status=status.HTTP_201_CREATED)
+
+
+
 @api_view()
-def blog_list(request):
+def product_list_view(request):
     p = Products.objects.all()
     return Response({'Product':ProductSerializer(p,many=True).data})
+
+
+
+@api_view()
+def product_get_view(request, pk):
+    p = Products.objects.get(id=pk)
+    return Response({'Product':ProductSerializer(p).data})
+
+
+@api_view(http_method_names=('put',))
+def update_product_view(request, pk):
+    product = Products.objects.get(id=pk)
+    serializer = ProductSerializer(product, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'Product':serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(http_method_names=('delete',))
+def delete_product_view(request, pk):
+    product = Products.objects.get(id=pk)
+    product.delete()
+    serializer = ProductSerializer(product, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'message':"Successfully Deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+
+@api_view(http_method_names=('post',))
+def create_address_view(request):
+    serializer  = AddressSerializer(data=request.data)
+    print(serializer)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'Address':serializer.data}, status=status.HTTP_201_CREATED)
+
+
+
+@api_view()
+def address_list_view(request):
+    p = Address.objects.all()
+    return Response({'Address':AddressSerializer(p,many=True).data})
+
+
+
+
+@api_view(http_method_names=('put',))
+def update_address_view(request, pk):
+    address = Address.objects.get(id=pk)
+    serializer = AddressSerializer(address, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'Address':serializer.data}, status=status.HTTP_200_OK)
+
+
+
+
+@api_view(http_method_names=('delete',))
+def delete_address_view(request, pk):
+    address = Address.objects.get(id=pk)
+    address.delete()
+    
+    return Response({'message':"Successfully Deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,7 +333,7 @@ def product_delete(request, **kwargs):
     
     
 
-def similar_product_helper(request, tag):
+def similar_product_helper(request,tag):
     similar_product = Products.objects.filter(tag=tag)
     return similar_product
 
