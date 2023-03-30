@@ -7,11 +7,14 @@ from .models import Products, Address, Order, Wishlist, ProfileUser, Order_item
 from Django_project.core.cart_helper import add_to_cart_helper, remove_from_cart_helper, decrement_cart
 from django.contrib.auth import authenticate, login as authlogin, logout
 from django.core.paginator import Paginator
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework import status
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -24,6 +27,27 @@ class AddressSerializer(ModelSerializer):
         model = Address
         fields = '__all__'
 
+  
+
+class CreateUserSerializer(ModelSerializer):
+    class Meta:
+        model = ProfileUser
+        exclude = ('last_login','is_superuser','is_staff','is_active','user_permissions', 'groups')
+        
+    def create(self, validated_data):
+        u = ProfileUser.objects.create_user(**validated_data)
+        return u 
+       
+       
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = ProfileUser
+        fields = ['id', 'username', 'email', 'last_login', 'first_name', 'last_name']
+       
+    
+
+
 
 
 @api_view(http_method_names=('post',))
@@ -33,7 +57,6 @@ def create_product_view(request):
     if serializer.is_valid():
         serializer.save()
     return Response({'Product':serializer.data}, status=status.HTTP_201_CREATED)
-
 
 
 @api_view()
@@ -49,6 +72,14 @@ def product_get_view(request, pk):
     return Response({'Product':ProductSerializer(p).data})
 
 
+@api_view(http_method_names=('patch',))
+def partial_update_product_view(request, pk):
+    product = Products.objects.get(id=pk)
+    serializer = ProductSerializer(product, data = request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({'Product':serializer.data}, status=status.HTTP_200_OK)
+
 @api_view(http_method_names=('put',))
 def update_product_view(request, pk):
     product = Products.objects.get(id=pk)
@@ -62,49 +93,128 @@ def update_product_view(request, pk):
 def delete_product_view(request, pk):
     product = Products.objects.get(id=pk)
     product.delete()
-    serializer = ProductSerializer(product, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # serializer = ProductSerializer(product, data = request.data)
+    # if serializer.is_valid():
+    #     serializer.save()
     return Response({'message':"Successfully Deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
 
 
 @api_view(http_method_names=('post',))
+@permission_classes([IsAuthenticated])
 def create_address_view(request):
+    print(request.user)
+    request.data['user'] = request.user.id
     serializer  = AddressSerializer(data=request.data)
-    print(serializer)
-    if serializer.is_valid():
-        serializer.save()
+    try:
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print(serializer.errors)
+    except:
+        print(serializer.errors)
+        return  Response({'Address':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     return Response({'Address':serializer.data}, status=status.HTTP_201_CREATED)
 
 
 
 @api_view()
+@permission_classes([IsAuthenticated])
 def address_list_view(request):
-    p = Address.objects.all()
+    try:
+        p = Address.objects.all()
+    except:
+        return Response({'Address':"Address list not found !!"})
+
     return Response({'Address':AddressSerializer(p,many=True).data})
 
 
 
 
 @api_view(http_method_names=('put',))
-def update_address_view(request, pk):
-    address = Address.objects.get(id=pk)
-    serializer = AddressSerializer(address, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+@permission_classes([IsAuthenticated])
+def update_address_view(request, pk, id):
+    try:
+        address = Address.objects.get(id=pk, user=id)
+        serializer = AddressSerializer(address, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+    except:
+        return  Response({'Message':' Address Not Found!'}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({'Address':serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(http_method_names=('patch',))
+@permission_classes([IsAuthenticated])
+def partial_update_address_view(request, pk, id):
+    try:
+        address = Address.objects.get(id=pk, user_id=id)
+        print(address)
+        serializer = AddressSerializer(address, data = request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+    except:
+        return  Response({'Message':' Address Not Found!'})
     return Response({'Address':serializer.data}, status=status.HTTP_200_OK)
 
 
 
 
 @api_view(http_method_names=('delete',))
+@permission_classes([IsAuthenticated])
 def delete_address_view(request, pk):
     address = Address.objects.get(id=pk)
     address.delete()
-    
     return Response({'message':"Successfully Deleted"}, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(http_method_names=('post',))
+def register_user_view(request):
+    serializer  = CreateUserSerializer(data=request.data)
+    try:
+        if serializer.is_valid():
+            print("yes")
+            serializer.save()
+        else:
+            print(serializer.errors)
+
+    except:
+        print(serializer.errors)
+        return  Response({'User':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'User':serializer.data}, status=status.HTTP_201_CREATED)
+    
+
+@api_view(http_method_names=('post',))
+def user_login_view(request):
+    user = ProfileUser.objects.get(email=request.data['email'])
+    user_match = UserSerializer(user)
+    authenticate_user  = authenticate(request , email=user.email, password=request.data['password'])
+    if authenticate_user is not None:
+        authlogin(request, authenticate_user)
+        token = Token.objects.create(user=user)
+        print(token)
+    else:
+        print("yes")
+        return Response({'message':"Invalid Credentials"})
+    print(request.user.id)
+    return Response({'User':user_match.data, 'Token':token.key})
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def logout_user_view(request):
+    try:
+       
+        token = Token.objects.get(user_id=request.user.id)
+        print(token)
+        token.delete()
+        logout(request)
+    except:
+        return Response({'message':"Try Again !!"})
+
+    return Response({'User':"Successfully Logout"})
+    
 
 
 
