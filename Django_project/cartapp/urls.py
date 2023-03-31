@@ -24,8 +24,8 @@ urlpatterns = [
 
      path('address/create', create_address_view),
      path('address/list', address_list_view),
-     path('address/update/<int:pk>/<int:id>', update_address_view),
-      path('address/p/update/<int:pk>/<int:id>', partial_update_address_view),
+     path('address/update/<int:pk>', update_address_view),
+      path('address/p/update/<int:pk>', partial_update_address_view),
       path('address/delete/<int:pk>', delete_address_view),
      
      

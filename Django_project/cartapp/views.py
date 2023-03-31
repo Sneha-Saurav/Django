@@ -14,7 +14,11 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.views import generic
+# from django.views.generic import ListView
+# from django.views.generic.detail import DetailView
+
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -51,6 +55,7 @@ class UserSerializer(ModelSerializer):
 
 
 @api_view(http_method_names=('post',))
+@permission_classes([IsAdminUser])
 def create_product_view(request):
     serializer  = ProductSerializer(data=request.data)
     print(serializer)
@@ -73,6 +78,7 @@ def product_get_view(request, pk):
 
 
 @api_view(http_method_names=('patch',))
+@permission_classes([IsAdminUser])
 def partial_update_product_view(request, pk):
     product = Products.objects.get(id=pk)
     serializer = ProductSerializer(product, data = request.data, partial=True)
@@ -81,6 +87,7 @@ def partial_update_product_view(request, pk):
     return Response({'Product':serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(http_method_names=('put',))
+@permission_classes([IsAdminUser])
 def update_product_view(request, pk):
     product = Products.objects.get(id=pk)
     serializer = ProductSerializer(product, data = request.data)
@@ -124,7 +131,8 @@ def create_address_view(request):
 def address_list_view(request):
     try:
         p = Address.objects.all()
-    except:
+
+    except Address.DoesNotExist:
         return Response({'Address':"Address list not found !!"})
 
     return Response({'Address':AddressSerializer(p,many=True).data})
@@ -134,13 +142,14 @@ def address_list_view(request):
 
 @api_view(http_method_names=('put',))
 @permission_classes([IsAuthenticated])
-def update_address_view(request, pk, id):
+def update_address_view(request, pk):
     try:
-        address = Address.objects.get(id=pk, user=id)
+        request.data['user'] = request.user.id
+        address = Address.objects.get(id=pk, user=request.user)
         serializer = AddressSerializer(address, data = request.data)
         if serializer.is_valid():
             serializer.save()
-    except:
+    except Address.DoesNotExist:
         return  Response({'Message':' Address Not Found!'}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'Address':serializer.data}, status=status.HTTP_200_OK)
@@ -148,14 +157,15 @@ def update_address_view(request, pk, id):
 
 @api_view(http_method_names=('patch',))
 @permission_classes([IsAuthenticated])
-def partial_update_address_view(request, pk, id):
+def partial_update_address_view(request, pk):
     try:
-        address = Address.objects.get(id=pk, user_id=id)
+        request.data['user'] = request.user.id
+        address = Address.objects.get(id=pk, user_id=request.user.id)
         print(address)
         serializer = AddressSerializer(address, data = request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-    except:
+    except Address.DoesNotExist:
         return  Response({'Message':' Address Not Found!'})
     return Response({'Address':serializer.data}, status=status.HTTP_200_OK)
 
@@ -165,8 +175,12 @@ def partial_update_address_view(request, pk, id):
 @api_view(http_method_names=('delete',))
 @permission_classes([IsAuthenticated])
 def delete_address_view(request, pk):
-    address = Address.objects.get(id=pk)
-    address.delete()
+    try:
+        address = Address.objects.get(id=pk)
+        address.delete()
+    except Address.DoesNotExist:
+         return Response({'message':"Not Found "}, status=status.HTTP_202_ACCEPTED)
+
     return Response({'message':"Successfully Deleted"}, status=status.HTTP_202_ACCEPTED)
 
 
@@ -392,6 +406,10 @@ def logout_user_product(request):
     return redirect('home')
 
 
+
+
+
+
 def product_create(request):
     product  = Product_form()
     if request.user.is_authenticated and request.user.has_perm('cartapp.add_products'):
@@ -412,6 +430,19 @@ def product_create(request):
          messages.error(request,'Dont have permission to create')
     return render(request, 'product_create.html',{'form':product})
 
+
+
+class ProductListView(generic.ListView):
+    model = Products
+    context_object_name = 'product_list'
+    template_name = 'product_list.html' 
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['count'] = Products.objects.count()
+        return context
+
 def product_list(request):
     if request.user.is_authenticated:
         products = Products.objects.all()
@@ -423,6 +454,11 @@ def product_list(request):
         messages.error(request,'Please register or login yourself!!')
     return render(request, 'list_product.html', {'products':page_obj})
 
+
+class  ProductDetailView(generic.DetailView):
+    model = Products
+    template_name = 'product_details.html'
+    context_object_name = 'product' 
 
 
 def product_details(request, **kwargs):
