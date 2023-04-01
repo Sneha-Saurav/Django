@@ -407,28 +407,33 @@ def logout_user_product(request):
 
 
 
+class CreateProductView(generic.CreateView):
+    form_class = Product_form
+    template_name ='product_new.html'
+    success_url ='/product'
+    success_message = 'Product Successfully Created'
 
 
 
-def product_create(request):
-    product  = Product_form()
-    if request.user.is_authenticated and request.user.has_perm('cartapp.add_products'):
-        print(request.user.has_perm('cartapp.add_products'))
-        print(request.user.is_authenticated)
-        if request.method  == 'POST':
-            print("ssss")
-            print(request.FILES)
-            product  = Product_form(request.POST,request.FILES)
-            if product.is_valid():
-                print('save')
-                product.save()
-                return redirect('list_product')
+# def product_create(request):
+#     product  = Product_form()
+#     if request.user.is_authenticated and request.user.has_perm('cartapp.add_products'):
+#         print(request.user.has_perm('cartapp.add_products'))
+#         print(request.user.is_authenticated)
+#         if request.method  == 'POST':
+#             print("ssss")
+#             print(request.FILES)
+#             product  = Product_form(request.POST,request.FILES)
+#             if product.is_valid():
+#                 print('save')
+#                 product.save()
+#                 return redirect('list_product')
 
-            print(request.POST)
-            messages.success(request,'Successfully Created')
-    else:
-         messages.error(request,'Dont have permission to create')
-    return render(request, 'product_create.html',{'form':product})
+#             print(request.POST)
+#             messages.success(request,'Successfully Created')
+#     else:
+#          messages.error(request,'Dont have permission to create')
+#     return render(request, 'product_create.html',{'form':product})
 
 
 
@@ -443,16 +448,16 @@ class ProductListView(generic.ListView):
         context['count'] = Products.objects.count()
         return context
 
-def product_list(request):
-    if request.user.is_authenticated:
-        products = Products.objects.all()
-        paginator = Paginator(products, 3)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-    else:
-        page_obj =[]
-        messages.error(request,'Please register or login yourself!!')
-    return render(request, 'list_product.html', {'products':page_obj})
+# def product_list(request):
+#     if request.user.is_authenticated:
+#         products = Products.objects.all()
+#         paginator = Paginator(products, 3)
+#         page_number = request.GET.get('page')
+#         page_obj = paginator.get_page(page_number)
+#     else:
+#         page_obj =[]
+#         messages.error(request,'Please register or login yourself!!')
+#     return render(request, 'list_product.html', {'products':page_obj})
 
 
 class  ProductDetailView(generic.DetailView):
@@ -461,21 +466,34 @@ class  ProductDetailView(generic.DetailView):
     context_object_name = 'product' 
 
 
-def product_details(request, **kwargs):
-    if pk := kwargs.get('id'):
-        product = Products.objects.get(id=pk)
-        print(product.category)
-        get_product= similar_product_helper(request,product.tag)
-        print(get_product)
-    return render(request, 'product_details.html', {'product':product, 'similar_product':get_product})
+# def product_details(request, **kwargs):
+#     if pk := kwargs.get('id'):
+#         product = Products.objects.get(id=pk)
+#         print(product.category)
+#         get_product= similar_product_helper(request,product.tag)
+#         print(get_product)
+#     return render(request, 'product_details.html', {'product':product, 'similar_product':get_product})
 
 
-def product_delete(request, **kwargs):
-    if pk := kwargs.get('id'):
-          product = Products.objects.get(id=pk)
-          product.delete()
-          return redirect('list_product')
-    return render(request, 'list_product')
+class ProductsUpdateView(generic.UpdateView):
+    model = Products
+    template_name = 'products_form.html'
+    form_class = Product_form
+    success_url = '/product'
+
+
+class DeleteProductsView(generic.DeleteView):
+    model = Products
+    template_name = 'product_confirm_delete.html'
+    success_url = '/product'
+    success_message = 'Product Successfully Deleted'
+
+# def product_delete(request, **kwargs):
+#     if pk := kwargs.get('id'):
+#           product = Products.objects.get(id=pk)
+#           product.delete()
+#           return redirect('list_product')
+#     return render(request, 'list_product')
     
     
 

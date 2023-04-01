@@ -54,6 +54,7 @@ background-color: #333;
         <a href="{% url 'product_details' p.id %}" class="btn btn-primary float-right" data-abc="true"> Details</a>
         {% if request.user.is_superuser %}
         <a href="{% url 'product_delete' p.id %}" class="btn btn-primary float-right" data-abc="true"> Delete Product</a>
+        <a href="{% url 'product_update' p.id %}" class="btn btn-primary float-right" data-abc="true"> Update Product</a>
 
         {% endif %}
         

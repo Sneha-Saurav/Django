@@ -69,7 +69,7 @@ class Product_form(forms.ModelForm):
     class Meta:
         model = Products
         fields ='__all__'
-        exclude = ['created_at']
+        exclude = ['created_at', 'tag']
         widgets = {
             'product_name': TextInput(attrs={
                 'class': "form-control",
