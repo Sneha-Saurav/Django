@@ -26,7 +26,11 @@ background-color: #333;
 <div class="container mt-5">
 
 <div class="row">
-{% for p in products %}
+  <br><br>
+ <h1>
+  No of Total Products : {{count}}
+</h1>
+{% for p in product_list %}
 <div class="container d-flex justify-content-center">
   <figure class="card card-product-grid card-lg"> <a href="#" class="img-wrap" data-abc="true"> <img src="{{ MEDIA_URL }}{{p.image.url}}"> </a>
       <figcaption class="info-wrap">
@@ -66,17 +70,17 @@ background-color: #333;
 
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-5">
-          {% if products.has_previous %}
+          {% if page_obj.has_previous %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ movies.previous_page_number }}">Previous</a>
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
             </li>
           {% else %}
             <li class="page-item disabled">
               <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
             </li>
           {% endif %}
-          {% for i in products.paginator.page_range %}
-            {% if products.number == i %}
+          {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
               <li class="page-item active" aria-current="page">
                 <span class="page-link">
                   {{ i }}
@@ -87,9 +91,9 @@ background-color: #333;
               <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
             {% endif %}
           {% endfor %}
-          {% if products.has_next %}
+          {% if page_obj.has_next %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ movies.next_page_number }}">Next</a>
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
             </li>
           {% else %}
             <li class="page-item disabled">

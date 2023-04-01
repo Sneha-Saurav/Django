@@ -18,7 +18,7 @@ def remove_from_cart_helper(request, product_id):
     if str(product_id) in cart:
         del cart[str(product_id)]
     request.session['cart'] = cart
-    return request.session['cart']\
+    return request.session['cart']
     
 def decrement_cart(request, product_id):
     product = Products.objects.get(id=product_id)

@@ -71,8 +71,8 @@ ul.timeline > li.active:before {
         <table class="table mb-0">
             <thead>
                 <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Products Ordered</th>
+                    
                     <th scope="col">Amount</th>
                     <th scope="col">Ordered Date</th>
                     
@@ -80,12 +80,10 @@ ul.timeline > li.active:before {
             </thead>
             <tbody>
                 <tr>
-                    
                     <th>
-                        <img src="{{ MEDIA_URL }}{{ord.product.image.url}}"
-                            alt="product" class="" width="80">
+                        <strong><a href="{% url 'order_item' ord.pk %}" >Click Here</a>  </strong>
                     </th>
-                    <td>{{ord.product.description}}</td>
+                   
                    
                     <td><strong>{{ord.total_price}}</strong></td>
                     <td><span class="badge badge-warning">DELIVERED </span></td>
