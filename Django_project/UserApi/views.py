@@ -13,7 +13,115 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
 from django.views import View
+from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+from rest_framework import status
+from rest_framework.response import Response
+from cartapp.models import ProfileUser
 
+
+
+class BlogSerializer(ModelSerializer):
+    class Meta:
+        model = Blog
+        exclude =['create_date'] 
+
+
+class ProfileUserSerializer(ModelSerializer):
+    class Meta:
+        model = ProfileUser
+        fields =['first_name', 'last_name']
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["full_name"] = instance.first_name +" "+ instance.last_name
+        return data
+
+
+
+
+class ProfileListAPIVIEW(generics.ListAPIView):
+    queryset = ProfileUser.objects.all()
+    serializer_class = ProfileUserSerializer
+
+
+
+class BlogCreateAPIVIEW(generics.CreateAPIView):
+    serializer_class = BlogSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        response.data = {'msg':"Blog Successfully Created !!"}
+        response.status_code = status.HTTP_201_CREATED
+        return response
+    
+
+class BlogListAPIVIEW(generics.ListAPIView):
+    queryset = Blog.objects.filter(is_published=True)
+    serializer_class = BlogSerializer
+
+    
+
+
+
+
+class BlogRetreiveAPIVIEW(generics.RetrieveAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer =  super(BlogRetreiveAPIVIEW, self).retrieve(request, *args, **kwargs)
+        serializer.data  = {'msg':serializer.data['title']}
+        return serializer
+        
+
+
+class BlogListCreateAPIVIEW(generics.ListCreateAPIView):
+    queryset= Blog.objects.all()
+    serializer_class = BlogSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super(BlogListCreateAPIVIEW, self).create(request, *args, **kwargs)
+        response.data = {'msg':"Blog Successfully Created !!"}
+        response.status_code = status.HTTP_201_CREATED
+        return response
+    
+
+class BlogRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = BlogSerializer
+    queryset = Blog.objects.all()
+
+    def update(self, request, *args, **kwargs):
+       response =super(BlogRetrieveUpdateDestroyView, self).update(request, *args, **kwargs)
+       response.data =  {'msg':'Blog Successfully Updated !!'}
+       return response
+    
+    def delete(self, request, *args, **kwargs):
+        response = super(BlogRetrieveUpdateDestroyView, self).delete(request, *args, **kwargs)
+        response.data  = {'msg':"Successfully Deleted !!"}
+        response.status_code - status.HTTP_202_ACCEPTED
+        return response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ___________________________________________________________MVT_____________________________________________________________________________________
 format=  "%Y-%m-%d"
 
 class BlogFormView(View):

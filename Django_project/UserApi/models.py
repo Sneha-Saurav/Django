@@ -6,7 +6,7 @@ class Blog(models.Model):
     author = models.CharField(max_length=20)
     description = models.TextField()
     is_published= models.BooleanField(default=False)
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now=True)
     class Meta:
         permissions = (
             ('can_publish', 'Can only Publish'),
