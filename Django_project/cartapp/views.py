@@ -16,6 +16,9 @@ from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.views import generic
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 # from django.views.generic import ListView
 # from django.views.generic.detail import DetailView
 
@@ -31,7 +34,23 @@ class AddressSerializer(ModelSerializer):
         model = Address
         fields = '__all__'
 
-  
+class AddressFilter(django_filters.FilterSet):
+
+    user__username = django_filters.CharFilter(lookup_expr='icontains')
+    class Meta:
+        model = Address
+        fields =['user']
+
+        
+class AddressViewset(viewsets.ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AddressFilter
+
+
+
+
 
 class CreateUserSerializer(ModelSerializer):
     class Meta:

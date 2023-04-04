@@ -15,18 +15,47 @@ from django.contrib.auth.models import User
 from django.views import View
 from rest_framework.views import APIView
 from rest_framework import generics
-from rest_framework import serializers
+from rest_framework import serializers , viewsets
 from rest_framework.serializers import ModelSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from cartapp.models import ProfileUser
-
-
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 
 class BlogSerializer(ModelSerializer):
     class Meta:
         model = Blog
         exclude =['create_date'] 
+
+class BlogFilterView(django_filters.FilterSet):
+    title = django_filters.CharFilter(lookup_expr='contains')
+
+    class Meta:
+        model = Blog
+        fields =['title', 'is_published']
+
+
+
+class BLogViewset(viewsets.ModelViewSet):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BlogFilterView
+    # filterset_fields= ['title']
+
+
+    def create(self, request, *args, **kwargs):
+        response =  super().create(request, *args, **kwargs)
+        response.data = {'msg':"Blog Successfully Created !!"}
+        return response
+    
+    def update(self, request, *args, **kwargs):
+        response  =  super().update(request, *args, **kwargs)
+        response.data = {'msg':"Blog Updated Created !!"}
+        return response
+    
+
 
 
 class ProfileUserSerializer(ModelSerializer):
